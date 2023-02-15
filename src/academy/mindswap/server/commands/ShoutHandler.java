@@ -1,12 +1,12 @@
 package academy.mindswap.server.commands;
 
-import academy.mindswap.server.Server;
+import academy.mindswap.server.Game;
 
 public class ShoutHandler implements CommandHandler {
     @Override
-    public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
+    public void execute(Game game, Game.ClientConnectionHandler clientConnectionHandler) {
         String message = clientConnectionHandler.getMessage();
         String messageToSend = message.substring(6);
-        server.broadcast(clientConnectionHandler.getName(), messageToSend.toUpperCase());
+        game.broadcast(clientConnectionHandler.getName(), messageToSend.toUpperCase());
     }
 }

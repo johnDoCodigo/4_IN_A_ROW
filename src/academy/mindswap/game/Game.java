@@ -18,29 +18,21 @@ TO DO LIST:
 
 */
 
+import java.io.*;
+import java.net.Socket;
+
 public class Game {
-
-    /*
-    public static void main(String[] args) {
-
-        Game game1 = new Game();
-
-        game1.updatePrettyBoard();
-        System.out.println(game1.prettyBoard);
-    }
-     */
-
     String player1piece = "@";
     String player2piece = "#";
     String[][] board;
     String prettyBoard;
     int numberOfPlays;
 
+
     public Game() {
         this.board = new String[7][6];
         fillEmptyBoard();
         this.numberOfPlays = 0;
-
     }
 
     private void fillEmptyBoard() {
@@ -76,10 +68,14 @@ public class Game {
     }
 
     private void checkDraw() {
-        //if
+        if (numberOfPlays == 42) {
+            System.out.println("Game over. It's a draw. Try again!");
+        }
+        // playAgain();
     }
 
     private void checkWinner() {
         //if ..
     }
+
 }

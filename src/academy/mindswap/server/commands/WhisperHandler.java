@@ -1,6 +1,6 @@
 package academy.mindswap.server.commands;
 
-import academy.mindswap.server.Server;
+import academy.mindswap.server.Game;
 import academy.mindswap.server.messages.Messages;
 
 import java.util.Optional;
@@ -8,7 +8,7 @@ import java.util.Optional;
 public class WhisperHandler implements CommandHandler {
 
     @Override
-    public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
+    public void execute(Game game, Game.ClientConnectionHandler clientConnectionHandler) {
         String message = clientConnectionHandler.getMessage();
 
         if (message.split(" ").length < 3) {
@@ -16,7 +16,7 @@ public class WhisperHandler implements CommandHandler {
             return;
         }
 
-        Optional<Server.ClientConnectionHandler> receiverClient = server.getClientByName(message.split(" ")[1]);
+        Optional<Game.ClientConnectionHandler> receiverClient = game.getClientByName(message.split(" ")[1]);
 
         if (receiverClient.isEmpty()) {
             clientConnectionHandler.send(Messages.NO_SUCH_CLIENT);

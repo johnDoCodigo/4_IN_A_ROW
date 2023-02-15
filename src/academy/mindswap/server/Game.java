@@ -12,16 +12,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Server {
-
-
+public class Game {
     private ServerSocket serverSocket;
     private ExecutorService service;
     private final List<ClientConnectionHandler> clients;
 
 
-    public Server() {
+    public Game() {
         clients = new CopyOnWriteArrayList<>();
+        Game game = new Game();
+
        // clients = Collections.synchronizedList(new ArrayList<>());
      //   clients = new ArrayList<>();
     }
@@ -135,7 +135,7 @@ public class Server {
                 return;
             }
 
-            command.getHandler().execute(Server.this, this);
+            command.getHandler().execute(Game.this, this);
         }
 
         public void send(String message) {
