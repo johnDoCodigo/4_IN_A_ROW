@@ -3,8 +3,8 @@ package academy.mindswap.game;
 /*
 
 TO DO LIST:
-
-* playAgain();? //JP
+*gameOver (); //JP
+* playNewGame();? //JP
 
 * GAME METHODS:
 ** placePiece(); //FILIPE
@@ -27,9 +27,14 @@ public class Game {
 
         game1.updatePrettyBoard();
         System.out.println(game1.prettyBoard);
+
+        DUVIDA: ISTO VAI AQUI PARA INICIAR UM JOGO NOVO OU NO METODO DO JOGO NOVO? CREIO QUE TENHO QUE CRIAR AQUI
+        Game playNewGame = new Game();
+        System.out.println(playNewGame.prettyBoard);
+
+
     }
      */
-
     String player1piece = "@";
     String player2piece = "#";
     String[][] board;
@@ -40,7 +45,6 @@ public class Game {
         this.board = new String[7][6];
         fillEmptyBoard();
         this.numberOfPlays = 0;
-
     }
 
     private void fillEmptyBoard() {
@@ -50,7 +54,6 @@ public class Game {
             }
         }
     }
-
     public void placePiece(int x) {
         //check if possition already has a String, if not, place it on first empty Y.
         //for ... board[out][i]
@@ -61,6 +64,8 @@ public class Game {
         checkWinner();
         checkDraw();
     }
+
+
 
     private String updatePrettyBoard() {
         prettyBoard = "+---+---+---+---+---+---+---+\n" +
@@ -74,12 +79,26 @@ public class Game {
                 "| 0   1   2   3   4   5   6 |\n";
         return prettyBoard;
     }
+    private boolean checkDraw() {
 
-    private void checkDraw() {
         //if
     }
 
-    private void checkWinner() {
+    private boolean checkWinner() {
         //if ..
+    }
+
+    private boolean gameOver(){
+        boolean gameOver = false;
+        if (checkDraw() || checkWinner());
+        return gameOver;
+    }
+
+    public boolean playNewGame(){
+        boolean playNewGame = false;
+        if (playNewGame == true && gameOver() == true);
+        //  System.out.println(playNewGame);
+        this.board = new String[7][6];
+        return playNewGame;
     }
 }

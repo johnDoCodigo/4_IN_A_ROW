@@ -1,5 +1,7 @@
 package academy.mindswap.server.messages;
 
+import academy.mindswap.server.commands.PlayAgainHandler;
+
 public abstract class Messages {
     public static final String SERVER_STARTED = "Server started on port: %s";
     public static final String DEFAULT_NAME = "CLIENT-";
@@ -22,5 +24,6 @@ public abstract class Messages {
 
     public static final String SELF_NAME_CHANGED = "You changed your name to: %s";
     public static final String NAME_CHANGED = "%s changed name to: %s";
+    public static final String PLAY_AGAIN = "Want to PlayAgain??";
 
 }

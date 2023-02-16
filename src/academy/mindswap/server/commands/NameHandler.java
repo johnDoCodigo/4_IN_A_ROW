@@ -8,7 +8,7 @@ public class NameHandler implements CommandHandler{
     @Override
     public void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler) {
         String message = clientConnectionHandler.getMessage();
-        String name = message.substring(6);
+        String name = message.substring(7);
         String oldName = clientConnectionHandler.getName();
         server.getClientByName(name).ifPresentOrElse(
                 client -> clientConnectionHandler.send(Messages.CLIENT_ALREADY_EXISTS),
