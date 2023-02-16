@@ -13,17 +13,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server {
-
-
     private ServerSocket serverSocket;
     private ExecutorService service;
     private final List<ClientConnectionHandler> clients;
 
-
     public Server() {
         clients = new CopyOnWriteArrayList<>();
        // clients = Collections.synchronizedList(new ArrayList<>());
-     //   clients = new ArrayList<>();
+       // clients = new ArrayList<>();
     }
 
     public void start(int port) throws IOException {
@@ -51,7 +48,6 @@ public class Server {
         /*synchronized (clients) {
             clients.add(clientConnectionHandler);
         }*/
-
         clients.add(clientConnectionHandler);
         clientConnectionHandler.send(Messages.WELCOME.formatted(clientConnectionHandler.getName()));
         clientConnectionHandler.send(Messages.COMMANDS_LIST);
@@ -110,7 +106,6 @@ public class Server {
                     if (message.equals("")) {
                         continue;
                     }
-
                     broadcast(name, message);
                 }
             } catch (IOException e) {

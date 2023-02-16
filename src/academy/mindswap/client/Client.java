@@ -3,11 +3,7 @@ package academy.mindswap.client;
 import java.io.*;
 import java.net.Socket;
 
-
-//rui_branch
-
 public class Client {
-
     public static void main(String[] args) {
         Client client = new Client();
         try {
@@ -15,7 +11,6 @@ public class Client {
         } catch (IOException e) {
             System.out.println("Connection closed...");
         }
-
     }
 
     private void start(String host, int port) throws IOException {
@@ -44,7 +39,6 @@ public class Client {
 
         @Override
         public void run() {
-
             while (!socket.isClosed()) {
                 try {
                     String line = in.readLine();
