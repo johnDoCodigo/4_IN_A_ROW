@@ -1,4 +1,4 @@
-package academy.mindswap.client;
+package academy.mindswap.player;
 
 import java.io.*;
 import java.net.Socket;
@@ -6,12 +6,12 @@ import java.net.Socket;
 
 //dev_branch
 
-public class Client {
+public class Player {
 
     public static void main(String[] args) {
-        Client client = new Client();
+        Player player = new Player();
         try {
-            client.start("localhost", 8082);
+            player.start("localhost", 8082);
         } catch (IOException e) {
             System.out.println("Connection closed...");
         }

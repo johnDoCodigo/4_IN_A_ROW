@@ -12,16 +12,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Server {
-
-
+public class GameServer {
     private ServerSocket serverSocket;
     private ExecutorService service;
-    private final List<ClientConnectionHandler> clients;
+    private final List<playerConnectionHandler> players;
 
 
-    public Server() {
-        clients = new CopyOnWriteArrayList<>();
+    public GameServer() {
+        players = new CopyOnWriteArrayList<>();
+        GameServer gameServer = new GameServer();
+
        // clients = Collections.synchronizedList(new ArrayList<>());
      //   clients = new ArrayList<>();
     }
@@ -39,68 +39,68 @@ public class Server {
     }
 
     public void acceptConnection(int numberOfConnections) throws IOException {
-        Socket clientSocket = serverSocket.accept();
-        ClientConnectionHandler clientConnectionHandler =
-                new ClientConnectionHandler(clientSocket,
+        Socket playerSocket = serverSocket.accept();
+        playerConnectionHandler playerConnectionHandler =
+                new playerConnectionHandler(playerSocket,
                 Messages.DEFAULT_NAME + numberOfConnections);
-        service.submit(clientConnectionHandler);
+        service.submit(playerConnectionHandler);
         //addClient(clientConnectionHandler);
     }
 
-    private void addClient(ClientConnectionHandler clientConnectionHandler) {
+    private void addPlayer(playerConnectionHandler playerConnectionHandler) {
         /*synchronized (clients) {
             clients.add(clientConnectionHandler);
         }*/
 
-        clients.add(clientConnectionHandler);
-        clientConnectionHandler.send(Messages.WELCOME.formatted(clientConnectionHandler.getName()));
-        clientConnectionHandler.send(Messages.COMMANDS_LIST);
-        broadcast(clientConnectionHandler.getName(), Messages.CLIENT_ENTERED_CHAT);
+        players.add(playerConnectionHandler);
+        playerConnectionHandler.send(Messages.WELCOME.formatted(playerConnectionHandler.getName()));
+        playerConnectionHandler.send(Messages.COMMANDS_LIST);
+        broadcast(playerConnectionHandler.getName(), Messages.PLAYER_ENTERED_GAME);
     }
 
     public void broadcast(String name, String message) {
-        clients.stream()
+        players.stream()
                 .filter(handler -> !handler.getName().equals(name))
                 .forEach(handler -> handler.send(name + ": " + message));
     }
 
 
-    public String listClients() {
+    public String listPlayers() {
         StringBuffer buffer = new StringBuffer();
-        clients.forEach(client -> buffer.append(client.getName()).append("\n"));
+        players.forEach(client -> buffer.append(client.getName()).append("\n"));
         return buffer.toString();
     }
 
-    public void removeClient(ClientConnectionHandler clientConnectionHandler) {
-        clients.remove(clientConnectionHandler);
+    public void removePlayer(playerConnectionHandler playerConnectionHandler) {
+        players.remove(playerConnectionHandler);
 
     }
 
-    public Optional<ClientConnectionHandler> getClientByName(String name) {
-        return clients.stream()
+    public Optional<playerConnectionHandler> getClientByName(String name) {
+        return players.stream()
                 .filter(clientConnectionHandler -> clientConnectionHandler.getName().equalsIgnoreCase(name))
                 .findFirst();
     }
 
-    public class ClientConnectionHandler implements Runnable {
+    public class playerConnectionHandler implements Runnable {
 
         private String name;
-        private Socket clientSocket;
+        private Socket playerSocket;
         private BufferedWriter out;
         private String message;
 
-        public ClientConnectionHandler(Socket clientSocket, String name) throws IOException {
-            this.clientSocket = clientSocket;
+        public playerConnectionHandler(Socket playerSocket, String name) throws IOException {
+            this.playerSocket = playerSocket;
             this.name = name;
-            this.out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+            this.out = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream()));
         }
 
         @Override
         public void run() {
-            addClient(this);
+            addPlayer(this);
             try {
                // BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                Scanner in = new Scanner(clientSocket.getInputStream());
+                Scanner in = new Scanner(playerSocket.getInputStream());
                 while (in.hasNext()) {
                     message = in.nextLine();
                     if (isCommand(message)) {
@@ -114,9 +114,9 @@ public class Server {
                     broadcast(name, message);
                 }
             } catch (IOException e) {
-                System.err.println(Messages.CLIENT_ERROR + e.getMessage());
+                System.err.println(Messages.PLAYER_ERROR + e.getMessage());
             } finally {
-                removeClient(this);
+                removePlayer(this);
             }
         }
 
@@ -135,7 +135,7 @@ public class Server {
                 return;
             }
 
-            command.getHandler().execute(Server.this, this);
+            command.getHandler().execute(GameServer.this, this);
         }
 
         public void send(String message) {
@@ -144,14 +144,14 @@ public class Server {
                 out.newLine();
                 out.flush();
             } catch (IOException e) {
-                removeClient(this);
+                removePlayer(this);
                 e.printStackTrace();
             }
         }
 
         public void close() {
             try {
-                clientSocket.close();
+                playerSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
