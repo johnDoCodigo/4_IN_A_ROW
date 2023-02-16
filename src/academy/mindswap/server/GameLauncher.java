@@ -5,10 +5,10 @@ import java.io.IOException;
 public class GameLauncher {
 
     public static void main(String[] args) {
-        Game game = new Game();
+        GameServer gameServer = new GameServer();
 
         try {
-           game.start(8082);
+           gameServer.start(8082);
         } catch (IOException e) {
             e.printStackTrace();
         }
