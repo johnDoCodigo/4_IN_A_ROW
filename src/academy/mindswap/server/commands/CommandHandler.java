@@ -1,7 +1,7 @@
 package academy.mindswap.server.commands;
 
-import academy.mindswap.server.Server;
+import academy.mindswap.server.GameServer;
 
 public interface CommandHandler {
-    void execute(Server server, Server.ClientConnectionHandler clientConnectionHandler);
+    void execute(GameServer gameServer, GameServer.playerConnectionHandler playerConnectionHandler);
 }

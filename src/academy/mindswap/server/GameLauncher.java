@@ -2,13 +2,13 @@ package academy.mindswap.server;
 
 import java.io.IOException;
 
-public class ServerLauncher {
+public class GameLauncher {
 
     public static void main(String[] args) {
-        Server server = new Server();
+        GameServer gameServer = new GameServer();
 
         try {
-           server.start(8082);
+           gameServer.start(8082);
         } catch (IOException e) {
             e.printStackTrace();
         }
