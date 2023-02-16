@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class GameServer {
+public class GameServer{
     private ServerSocket serverSocket;
     private ExecutorService service;
     private final List<playerConnectionHandler> players;
@@ -26,6 +26,7 @@ public class GameServer {
         players = new CopyOnWriteArrayList<>();
         connectFour = new ConnectFour();
     }
+
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -50,13 +51,12 @@ public class GameServer {
     }
 
     private String getPlayerNameInput(Socket playerSocket)  throws IOException {
-        BufferedReader consoleInput = new BufferedReader(new InputStreamReader(playerSocket.getInputStream())); //reads input from the input stream of the clientSocket object, which represents the client's connection to the server.
-        BufferedWriter outputName = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream())); //writes output to the output stream of the clientSocket object, which represents the client's connection to the server.
-        outputName.write("Please insert your username"); //writes the message "Please insert your username" to the client through the output stream
-        outputName.newLine(); //Add a newline character to the output stream
-        outputName.flush(); //flush the buffer. This ensures that the message is sent to the client immediately.
-        return consoleInput.readLine(); //returns the client username
-
+            BufferedReader consoleInput = new BufferedReader(new InputStreamReader(playerSocket.getInputStream())); //reads input from the input stream of the clientSocket object, which represents the client's connection to the server.
+            BufferedWriter outputName = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream())); //writes output to the output stream of the clientSocket object, which represents the client's connection to the server.
+            outputName.write("Please insert your username"); //writes the message "Please insert your username" to the client through the output stream
+            outputName.newLine(); //Add a newline character to the output stream
+            outputName.flush(); //flush the buffer. This ensures that the message is sent to the client immediately.
+            return consoleInput.readLine(); //returns the client username
     }
 
     private void addPlayer(playerConnectionHandler playerConnectionHandler) throws IOException {
@@ -70,6 +70,9 @@ public class GameServer {
 
         playerConnectionHandler.send(Messages.COMMANDS_LIST);
         broadcast(playerConnectionHandler.getName(), Messages.PLAYER_ENTERED_GAME);
+
+        //TODO Faz o print da lista de comandos duas vezes no mesmo player, uma quando o player coloca o nome outra quando o segundo cinsere o nome;
+
     }
 
     public void broadcast(String name, String message) {
@@ -78,6 +81,10 @@ public class GameServer {
                 .forEach(handler -> handler.send(name + ": " + message));
     }
 
+    public void broadcastToPlayer(String message) {
+        players.stream()
+                .forEach(handler -> handler.send(message));
+    }
 
     public String listPlayers() {
         StringBuffer buffer = new StringBuffer();
@@ -100,7 +107,7 @@ public class GameServer {
 
         private String name;
         private Socket playerSocket;
-        private BufferedWriter out;
+        private static BufferedWriter out;
         private String playerChoiceInput;
 
         private int playerTurn;
@@ -122,18 +129,21 @@ public class GameServer {
             }
 
             try {
-               // BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
                 Scanner in = new Scanner(playerSocket.getInputStream());
                 while (in.hasNext()) {
 
                     //Todo -> if player turn, continue, else, wait.
-                    if (connectFour.getNumberOfPlays()%(this.playerTurn)==0) { //0,1,2,3,4,5 %
-                        continue;
-                    } else {
-                        wait();
+                    synchronized (this) {
+                        if (connectFour.getNumberOfPlays() % (this.playerTurn) == 0 ) {
+                            continue;
+                        } else {
+                            wait();
+                            notifyAll();
+                        }
                     }
+                        playerChoiceInput = in.nextLine();
 
-                    playerChoiceInput = in.nextLine();
 
                     //TODO filter the input from the player - he can only input 0-6. (regex)
 
@@ -147,27 +157,21 @@ public class GameServer {
                     }
 
                     //TODO checkDraw
-                    if (true/*connectFour.checkWinner(this)*/){
-                        //broadcast MESSAGE.DRAW
-                        //broadcast prettyBoard
-                        //if ... command wants to play again ? resetBoard : socketCloses; BOTH PLAYERS MUST ACCEPT TO PLAYAGAIN
+                    synchronized (this) {
+                        if (connectFour.checkDraw()) {
+                            connectFour.getPrettyBoard();
+                            broadcastToPlayer(Messages.CHECK_DRAW);
+                        }
+                        if (isCommand(playerChoiceInput)) {
+                            dealWithCommand(playerChoiceInput);
+                            continue;
+                        }
                     }
-
-                    if (isCommand(playerChoiceInput)) {
-                        dealWithCommand(playerChoiceInput);
-                        continue;
-                    }
-                    if (playerChoiceInput.equals("")) {
-                        continue;
-                    }
-
-
-
-
 
                     broadcast(name, connectFour.getPrettyBoard());
                     notifyAll();
                 }
+
             } catch (IOException e) {
                 System.err.println(Messages.PLAYER_ERROR + e.getMessage());
             } catch (InterruptedException e) {

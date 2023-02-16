@@ -30,4 +30,5 @@ public class Messages {
     public static final String NAME_CHANGED = "%s changed name to: %s";
 
     public static final String PLAY_AGAIN = "Do you want to play again?";
+    public static final String CHECK_DRAW = "Game over. It's a draw. If you want do play again please write /playagain.";
 }

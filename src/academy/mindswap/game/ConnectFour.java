@@ -2,6 +2,7 @@ package academy.mindswap.game;
 import java.util.Scanner;
 
 public class ConnectFour {
+
 /*
     public static void main(String[] args) {
 
@@ -128,7 +129,6 @@ public class ConnectFour {
             numberOfPlays++;
             updatePrettyBoard();
         }
-
     }
 
     //TODO: UPDATE
@@ -148,11 +148,11 @@ public class ConnectFour {
         return prettyBoard;
     }
 
-    private void checkDraw() {
+    public boolean checkDraw() {
         if (numberOfPlays == 42) {
-            System.out.println("Game over. It's a draw. Try again!");
+          //  System.out.println("Game over. It's a draw. Try again!");
         }
-        // playAgain();
+        return true;
     }
 
     public boolean checkWinner(String playerTurn) {
