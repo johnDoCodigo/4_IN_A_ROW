@@ -1,4 +1,5 @@
 package academy.mindswap.game;
+import java.util.Scanner;
 
 /*
 
@@ -8,6 +9,7 @@ TO DO LIST:
 
 * GAME METHODS:
 ** placePiece(); //FILIPE
+** switchPlayers(); // FILIPE
 ** checkWin(); //RUI
 ** checkDraw(); //SUSANA
 
@@ -17,21 +19,21 @@ TO DO LIST:
 ** Communication with Server/Game (receive and send I/O to server) //JP
 
 */
-
 public class Game {
 
-    /*
-    public static void main(String[] args) {
+
+  /*  public static void main(String[] args) {
 
         Game game1 = new Game();
 
         game1.updatePrettyBoard();
         System.out.println(game1.prettyBoard);
     }
-     */
+   */
 
     String player1piece = "@";
     String player2piece = "#";
+    String player;
     String[][] board;
     String prettyBoard;
     int numberOfPlays;
@@ -52,15 +54,38 @@ public class Game {
     }
 
     public void placePiece(int x) {
-        //check if possition already has a String, if not, place it on first empty Y.
-        //for ... board[out][i]
-        //else return and player must choose another X
 
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Player: " + player + " turn. Choose a column (0 to 6): ");
+        while (!isWinner && numberOfPlays < 42) {
 
-        updatePrettyBoard();
-        checkWinner();
-        checkDraw();
+            int column = scanner.nextInt();
+            if (column < 0 || column > 6) {
+                System.out.println("Please enter a valid column from 0 to 6.");
+                continue;
+            }
+            for (int y = 0; y < 6; y++) {
+                if (board[x][y].equals(" ")) {
+                    board[x][y] = "@";
+                }
+            }
+            numberOfPlays++;
+            updatePrettyBoard();
+            checkWinner();
+            checkDraw();
+            switchPlayers();
+        }
+
     }
+
+    private void switchPlayers() {
+        if (player == "@") {
+            player = "#";
+        } else {
+            player = "@";
+        }
+    }
+
 
     private String updatePrettyBoard() {
         prettyBoard = "+---+---+---+---+---+---+---+\n" +
