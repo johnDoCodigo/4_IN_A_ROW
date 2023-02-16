@@ -7,12 +7,13 @@ public class Messages {
     public static final String NO_SUCH_COMMAND = "⚠️ Invalid command!";
     public static final String COMMANDS_LIST = """
             List of available commands:
-            /play again -> starts a new game
+            /playagain -> starts a new game
+            /list -> gets you the list of connected players
             /quit -> exits the gameServer
             
             
             
-            /list -> gets you the list of connected clients
+            
             /shout <message> -> lets you shout a message to all connected clients
             /whisper <username> <message> -> lets you whisper a message to a single connected player
             /name <new name> -> lets you change your name
@@ -28,4 +29,5 @@ public class Messages {
     public static final String SELF_NAME_CHANGED = "You changed your name to: %s";
     public static final String NAME_CHANGED = "%s changed name to: %s";
 
+    public static final String PLAY_AGAIN = "Do you want to play again?";
 }

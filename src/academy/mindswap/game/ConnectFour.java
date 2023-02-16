@@ -1,32 +1,10 @@
 package academy.mindswap.game;
 import java.util.Scanner;
 
+public class ConnectFour {
 /*
-
-TO DO LIST:
-
-* playAgain();? //JP
-
-* GAME METHODS:
-** placePiece(); //FILIPE
-** switchPlayers(); // FILIPE
-** checkWin(); //RUI
-** checkDraw(); //SUSANA
-
-*SERVER
-** Create a game instance //SUSANA
-** Communication with Server/Client (receive and send I/O to server) //RUI
-** Communication with Server/Game (receive and send I/O to server) //JP
-
-*/
-
-import java.io.*;
-import java.net.Socket;
-
-public class Game {
-
     public static void main(String[] args) {
-/*
+
         Game game1 = new Game();
 
 
@@ -105,19 +83,18 @@ public class Game {
 
         System.out.println("Game winner? " + game1.checkWinner("@"));
         System.out.println(game1.updatePrettyBoard());
-*/
+
 
     }
+*/
+    private String player1piece = "B";
+    private String player2piece = "R";
+    private String player;
+    private String[][] board;
+    private String prettyBoard;
+    private int numberOfPlays;
 
-
-    String player1piece = "@";
-    String player2piece = "#";
-    String player;
-    String[][] board;
-    String prettyBoard;
-    int numberOfPlays;
-
-    public Game() {
+    public ConnectFour() {
         this.board = new String[7][6];
         fillEmptyBoard();
         this.numberOfPlays = 0;
@@ -132,11 +109,11 @@ public class Game {
         }
     }
 
-    public void placePiece(int x) {
+    public void placePiece(int playerChoiceInput) {
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Player: " + player + " turn. Choose a column (0 to 6): ");
-        while (!isWinner && numberOfPlays < 42) {
+        while (!checkWinner(player) && numberOfPlays < 42) {
 
             int column = scanner.nextInt();
             if (column < 0 || column > 6) {
@@ -144,28 +121,17 @@ public class Game {
                 continue;
             }
             for (int y = 0; y < 6; y++) {
-                if (board[x][y].equals(" ")) {
-                    board[x][y] = "@";
+                if (board[playerChoiceInput][y].equals(" ")) {
+                    board[playerChoiceInput][y] = "@";
                 }
             }
             numberOfPlays++;
             updatePrettyBoard();
-            checkWinner();
-            checkDraw();
-            switchPlayers();
         }
 
     }
 
-    private void switchPlayers() {
-        if (player == "@") {
-            player = "#";
-        } else {
-            player = "@";
-        }
-    }
-
-
+    //TODO: UPDATE
     private String updatePrettyBoard() {
         prettyBoard = "|---|---|---|---|---|---|---|\n" +
                 "| " + board[0][5] + " | " + board[1][5] + " | " + board[2][5] + " | " + board[3][5] + " | " + board[4][5] + " | " + board[5][5] + " | " + board[6][5] + " |\n" +
@@ -189,7 +155,7 @@ public class Game {
         // playAgain();
     }
 
-    private boolean checkWinner(String playerTurn) {
+    public boolean checkWinner(String playerTurn) {
         int boardWidth = 7;
         int boardHeight = 6;
 
@@ -228,6 +194,30 @@ public class Game {
             }
         }
         return false;
+    }
+
+    public String getPrettyBoard() {
+        return prettyBoard;
+    }
+
+    public String getPlayer1piece() {
+        return player1piece;
+    }
+
+    public String getPlayer2piece() {
+        return player2piece;
+    }
+
+    public String getPlayer() {
+        return player;
+    }
+
+    public String[][] getBoard() {
+        return board;
+    }
+
+    public int getNumberOfPlays() {
+        return numberOfPlays;
     }
 }
 

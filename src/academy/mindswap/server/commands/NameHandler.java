@@ -7,7 +7,7 @@ import academy.mindswap.server.messages.Messages;
 public class NameHandler implements CommandHandler{
     @Override
     public void execute(GameServer gameServer, GameServer.playerConnectionHandler playerConnectionHandler) {
-        String message = playerConnectionHandler.getMessage();
+        String message = playerConnectionHandler.getPlayerChoiceInput();
         String name = message.substring(6);
         String oldName = playerConnectionHandler.getName();
         gameServer.getClientByName(name).ifPresentOrElse(

@@ -9,7 +9,7 @@ public class WhisperHandler implements CommandHandler {
 
     @Override
     public void execute(GameServer gameServer, GameServer.playerConnectionHandler playerConnectionHandler) {
-        String message = playerConnectionHandler.getMessage();
+        String message = playerConnectionHandler.getPlayerChoiceInput();
 
         if (message.split(" ").length < 3) {
             playerConnectionHandler.send(Messages.WHISPER_INSTRUCTIONS);
