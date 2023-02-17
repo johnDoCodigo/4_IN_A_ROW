@@ -9,7 +9,6 @@ public class PlayAgainHandler implements CommandHandler {
         String message = playerConnectionHandler.getPlayerChoiceInput();
         server.broadcast(playerConnectionHandler.getName(), playerConnectionHandler.getName() + Messages.PLAY_AGAIN);
         //TODO RESET THE GAME BOARD AND NUMBER OF MOVES
-        playerConnectionHandler.close();
-
-        }
+        server.getConnectFour().playAgain();
     }
+}

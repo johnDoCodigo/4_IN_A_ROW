@@ -138,6 +138,7 @@ public class ConnectFour {
         }
     }
 
+
     public void placePiece(int playerChoiceInput) {
         if (!checkWinner(player) && numberOfPlays < 42) {
             if (playerChoiceInput < 0 || playerChoiceInput > 6) {
@@ -280,3 +281,10 @@ public class ConnectFour {
     }
 }
 
+
+    public void playAgain() {
+        fillEmptyBoard();
+        this.numberOfPlays = 0;
+        System.out.println("ta a funcionar?");
+    }
+}
