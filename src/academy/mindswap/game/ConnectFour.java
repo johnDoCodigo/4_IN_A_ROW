@@ -134,6 +134,7 @@ public class ConnectFour {
         }
     }
 
+
     public void placePiece(int playerChoiceInput) {
 
         Scanner scanner = new Scanner(System.in);
@@ -262,3 +263,10 @@ public class ConnectFour {
     }
 }
 
+
+    public void playAgain() {
+        fillEmptyBoard();
+        this.numberOfPlays = 0;
+        System.out.println("ta a funcionar?");
+    }
+}
