@@ -12,17 +12,8 @@ public class PlayAgainHandler implements CommandHandler {
         String message = playerConnectionHandler.getPlayerChoiceInput();
         server.broadcast(playerConnectionHandler.getName(), playerConnectionHandler.getName() + Messages.PLAY_AGAIN);
         //TODO RESET THE GAME BOARD AND NUMBER OF MOVES
-        playAgain();
-    }
-
-    public void playAgain() {
-      ConnectFour connectFourPlayAgain = new ConnectFour();
-      connectFourPlayAgain.getNumberOfPlays();
-      //connectFourPlayAgain.
-
-
-
-        //adicionar aqui: campo novo sem as peças = updateprettyboard;
-        // zerar o number off moves dos jogadores;
+        System.out.println("antes");
+        server.getConnectFour().playAgain();
+        System.out.println("depois");
     }
 }

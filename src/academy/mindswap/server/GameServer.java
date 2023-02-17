@@ -127,7 +127,7 @@ public class GameServer {
                         wait();
                     }
 
-                    playerChoiceInput = in.nextLine();
+                    playerChoiceInput = in.nextLine(); //input do cliente - blocking method. sempre ativo à escuta
 
                     //TODO filter the input from the player - he can only input 0-6. (regex)
 
@@ -137,7 +137,8 @@ public class GameServer {
                     if (true/*connectFour.checkWinner(this)*/) {
                         //broadcast MESSAGE.WINNER
                         //broadcast prettyBoard with winner
-                        //if ... command wants to play again ? resetBoard : socketCloses; BOTH PLAYERS MUST ACCEPT TO PLAYAGAIN
+
+                        //if  command wants to play again ? resetBoard : socketCloses; BOTH PLAYERS MUST ACCEPT TO PLAYAGAIN
                     }
 
                     //TODO checkDraw
@@ -173,7 +174,7 @@ public class GameServer {
         }
 
         private void dealWithCommand(String message) throws IOException {
-            String description = message.split(" ")[0];
+            String description = message.split(" ")[0]; //foco na posição 0 do array onde ta o comando. blindar o código.
             Command command = Command.getCommandFromDescription(description);
 
             if (command == null) {
@@ -183,7 +184,7 @@ public class GameServer {
                 return;
             }
 
-            command.getHandler().execute(GameServer.this, this);
+            command.getHandler().execute(GameServer.this, this); // serve para executar os handlers.
         }
 
         public void send(String message) {
@@ -222,4 +223,7 @@ public class GameServer {
         return numberOfConnections;
     }
 
+    public ConnectFour getConnectFour() {
+        return connectFour;
+    }
 }

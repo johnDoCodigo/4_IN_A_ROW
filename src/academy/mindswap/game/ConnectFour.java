@@ -222,4 +222,10 @@ public class ConnectFour {
     public int getNumberOfPlays() {
         return numberOfPlays;
     }
+
+    public void playAgain() {
+        fillEmptyBoard();
+        this.numberOfPlays = 0;
+        System.out.println("ta a funcionar?");
+    }
 }
