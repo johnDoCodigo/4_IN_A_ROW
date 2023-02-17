@@ -18,12 +18,14 @@ public class GameServer {
     private ExecutorService service;
     private final List<playerConnectionHandler> players;
     private ConnectFour connectFour;
-
     private int numberOfConnections;
+    private int maxNumberOfPlayers = 0;
+    private final List<playerConnectionHandler> playersWaitingQueue;
 
 
     public GameServer() {
         players = new CopyOnWriteArrayList<>();
+        playersWaitingQueue = new CopyOnWriteArrayList<>();
         connectFour = new ConnectFour();
     }
 
@@ -33,12 +35,16 @@ public class GameServer {
         numberOfConnections = 1;
         System.out.printf(Messages.SERVER_STARTED, port + "\n");
 
-        while (true) {
-            //TODO: Accept only 2 connections //RUI
+        while (maxNumberOfPlayers < 2) {
             acceptConnection(numberOfConnections); //Blocking method
             ++numberOfConnections;
+            maxNumberOfPlayers++;
         }
-
+        while (maxNumberOfPlayers >= 2) {
+            acceptConnection(numberOfConnections); //Blocking method
+            ++numberOfConnections;
+            maxNumberOfPlayers++;
+        }
     }
 
     public void acceptConnection(int numberOfConnections) throws IOException {
@@ -70,6 +76,22 @@ public class GameServer {
 
         playerConnectionHandler.send(Messages.COMMANDS_LIST);
         broadcast(playerConnectionHandler.getName(), Messages.PLAYER_ENTERED_GAME);
+    }
+
+    private void addPlayerToWaitingQueue(playerConnectionHandler playerConnectionHandler) throws IOException {
+        playersWaitingQueue.add(playerConnectionHandler);
+        playerConnectionHandler.send(Messages.WAITING_QUEUE.formatted(playerConnectionHandler.getName()));
+
+        //TODO FEATURE AND REFACTOR
+        /*
+        //To refactor
+        String newName = getPlayerNameInput(playerConnectionHandler.playerSocket);
+        playerConnectionHandler.setName(newName);
+        System.out.println(playerConnectionHandler.getName());
+
+        playerConnectionHandler.send(Messages.COMMANDS_LIST);
+        broadcast(playerConnectionHandler.getName(), Messages.PLAYER_ENTERED_GAME);
+         */
     }
 
     public void broadcast(String name, String message) {
@@ -114,9 +136,12 @@ public class GameServer {
 
         @Override
         public void run() {
-
             try {
-                addPlayer(this);
+                if (maxNumberOfPlayers<=2) {
+                    addPlayer(this);
+                } else {
+                    addPlayerToWaitingQueue(this);
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -126,7 +151,7 @@ public class GameServer {
                 Scanner in = new Scanner(playerSocket.getInputStream());
                 while (in.hasNext()) {
 
-                    //Todo -> if player turn, continue, else, wait.
+                    //Todo -> if player turn, continue, else, wait. //SUSANA
                     if (connectFour.getNumberOfPlays()%(this.playerTurn)==0) { //0,1,2,3,4,5 %
                         continue;
                     } else {
@@ -135,22 +160,22 @@ public class GameServer {
 
                     playerChoiceInput = in.nextLine();
 
-                    //TODO filter the input from the player - he can only input 0-6. (regex)
+                    //TODO filter the input from the player - he can only input 0-6. (regex) //JP
 
-                    //TODO playerChoiceInput -> connectFour.placePiece(playerChoiceInput)...
+                    //TODO playerChoiceInput -> connectFour.placePiece(playerChoiceInput)...  //FILIPE
 
-                    //TODO checkWinner
+                    //TODO checkWinner //RUI
                     if (true/*connectFour.checkWinner(this)*/){
                         //broadcast MESSAGE.WINNER
                         //broadcast prettyBoard with winner
-                        //if ... command wants to play again ? resetBoard : socketCloses; BOTH PLAYERS MUST ACCEPT TO PLAYAGAIN
+                        //if ... command wants to play again ? resetBoard : socketCloses; BOTH PLAYERS MUST ACCEPT TO PLAYAGAIN //TODO:playagain //JP
                     }
 
-                    //TODO checkDraw
+                    //TODO checkDraw //SUSANA
                     if (true/*connectFour.checkWinner(this)*/){
                         //broadcast MESSAGE.DRAW
                         //broadcast prettyBoard
-                        //if ... command wants to play again ? resetBoard : socketCloses; BOTH PLAYERS MUST ACCEPT TO PLAYAGAIN
+                        //if ... command wants to play again ? resetBoard : socketCloses; BOTH PLAYERS MUST ACCEPT TO PLAYAGAIN //TODO:playagain //JP
                     }
 
                     if (isCommand(playerChoiceInput)) {

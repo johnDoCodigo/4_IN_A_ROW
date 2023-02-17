@@ -25,9 +25,9 @@ public class Messages {
     public static final String WELCOME = "Welcome to MindSwap's 4 in a row Game!";
     public static final String PLAYER_ERROR = "Something went wrong with this player's connection. Error: ";
     public static final String PLAYER_ALREADY_EXISTS = "A player with this name already exists. Please choose another one.";
-
     public static final String SELF_NAME_CHANGED = "You changed your name to: %s";
     public static final String NAME_CHANGED = "%s changed name to: %s";
 
     public static final String PLAY_AGAIN = "Do you want to play again?";
+    public static final String WAITING_QUEUE = "You have been added to the waiting queue";
 }
