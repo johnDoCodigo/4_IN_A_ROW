@@ -1,4 +1,8 @@
 package academy.mindswap.game;
+import academy.mindswap.server.messages.Messages;
+import academy.mindswap.server.sounds.Sound;
+import academy.mindswap.server.sounds.SoundFiles;
+
 import java.util.Scanner;
 
 public class ConnectFour {
@@ -109,26 +113,44 @@ public class ConnectFour {
         }
     }
 
+    public static void main(String[] args) {
+        ConnectFour teste = new ConnectFour();
+        teste.placePiece(5);
+        teste.placePiece(5);
+        teste.placePiece(5);
+        teste.placePiece(5);
+        teste.placePiece(5);
+        teste.placePiece(5);
+        teste.placePiece(5);
+        teste.placePiece(1);
+        teste.placePiece(2);
+        teste.placePiece(2);
+        System.out.println(teste.updatePrettyBoard());
+    }
+
     public void placePiece(int playerChoiceInput) {
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Player: " + player + " turn. Choose a column (0 to 6): ");
-        while (!checkWinner(player) && numberOfPlays < 42) {
-
-            int column = scanner.nextInt();
-            if (column < 0 || column > 6) {
+        if (!checkWinner(player) && numberOfPlays < 42) {
+            if (playerChoiceInput < 0 || playerChoiceInput > 6) {
                 System.out.println("Please enter a valid column from 0 to 6.");
-                continue;
             }
             for (int y = 0; y < 6; y++) {
                 if (board[playerChoiceInput][y].equals(" ")) {
-                    board[playerChoiceInput][y] = "@";
+                    if (numberOfPlays % 2 == 0) {
+                        board[playerChoiceInput][y] = "R";
+                        break;
+                    } else {
+                        board[playerChoiceInput][y] = "Y";
+                        break;
+                    }
+                }
+                if (y == 5) {
+                    System.out.println("This column is full, please choose another one.");
+                    //todo pedir novo input em caso de a coluna estar cheia
                 }
             }
             numberOfPlays++;
             updatePrettyBoard();
         }
-
     }
 
     //TODO: UPDATE
@@ -194,6 +216,17 @@ public class ConnectFour {
             }
         }
         return false;
+    }
+
+    public void gameOver(String winner) {
+        Sound sound = new Sound();
+        sound.getSoundClip(SoundFiles.GAME_OVER.getPath());
+        if (winner == "R") {
+            System.out.println(Messages.PLAYER1_WIN);
+        } else {
+            System.out.println(Messages.PLAYER2_WIN);
+        }
+
     }
 
     public String getPrettyBoard() {
