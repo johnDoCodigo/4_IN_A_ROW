@@ -18,15 +18,16 @@ public class GameServer{
     private ExecutorService service;
     private final List<playerConnectionHandler> players;
     private ConnectFour connectFour;
-
     private int numberOfConnections;
+    private int maxNumberOfPlayers = 0;
+    private final List<playerConnectionHandler> playersWaitingQueue;
 
 
     public GameServer() {
         players = new CopyOnWriteArrayList<>();
+        playersWaitingQueue = new CopyOnWriteArrayList<>();
         connectFour = new ConnectFour();
     }
-
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -34,12 +35,16 @@ public class GameServer{
         numberOfConnections = 1;
         System.out.printf(Messages.SERVER_STARTED, port + "\n");
 
-        while (true) {
-            //TODO: Accept only 2 connections //RUI
+        while (maxNumberOfPlayers < 2) {
             acceptConnection(numberOfConnections); //Blocking method
             ++numberOfConnections;
+            maxNumberOfPlayers++;
         }
-
+        while (maxNumberOfPlayers >= 2) {
+            acceptConnection(numberOfConnections); //Blocking method
+            ++numberOfConnections;
+            maxNumberOfPlayers++;
+        }
     }
 
     public void acceptConnection(int numberOfConnections) throws IOException {
@@ -51,12 +56,12 @@ public class GameServer{
     }
 
     private String getPlayerNameInput(Socket playerSocket)  throws IOException {
-            BufferedReader consoleInput = new BufferedReader(new InputStreamReader(playerSocket.getInputStream())); //reads input from the input stream of the clientSocket object, which represents the client's connection to the server.
-            BufferedWriter outputName = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream())); //writes output to the output stream of the clientSocket object, which represents the client's connection to the server.
-            outputName.write("Please insert your username"); //writes the message "Please insert your username" to the client through the output stream
-            outputName.newLine(); //Add a newline character to the output stream
-            outputName.flush(); //flush the buffer. This ensures that the message is sent to the client immediately.
-            return consoleInput.readLine(); //returns the client username
+        BufferedReader consoleInput = new BufferedReader(new InputStreamReader(playerSocket.getInputStream())); //reads input from the input stream of the clientSocket object, which represents the client's connection to the server.
+        BufferedWriter outputName = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream())); //writes output to the output stream of the clientSocket object, which represents the client's connection to the server.
+        outputName.write("Please insert your username"); //writes the message "Please insert your username" to the client through the output stream
+        outputName.newLine(); //Add a newline character to the output stream
+        outputName.flush(); //flush the buffer. This ensures that the message is sent to the client immediately.
+        return consoleInput.readLine(); //returns the client username
     }
 
     private void addPlayer(playerConnectionHandler playerConnectionHandler) throws IOException {
@@ -70,9 +75,22 @@ public class GameServer{
 
         playerConnectionHandler.send(Messages.COMMANDS_LIST);
         broadcast(playerConnectionHandler.getName(), Messages.PLAYER_ENTERED_GAME);
+    }
 
-        //TODO Faz o print da lista de comandos duas vezes no mesmo player, uma quando o player coloca o nome outra quando o segundo cinsere o nome;
+    private void addPlayerToWaitingQueue(playerConnectionHandler playerConnectionHandler) throws IOException {
+        playersWaitingQueue.add(playerConnectionHandler);
+        playerConnectionHandler.send(Messages.WAITING_QUEUE.formatted(playerConnectionHandler.getName()));
 
+        //TODO FEATURE AND REFACTOR
+        /*
+        //To refactor
+        String newName = getPlayerNameInput(playerConnectionHandler.playerSocket);
+        playerConnectionHandler.setName(newName);
+        System.out.println(playerConnectionHandler.getName());
+
+        playerConnectionHandler.send(Messages.COMMANDS_LIST);
+        broadcast(playerConnectionHandler.getName(), Messages.PLAYER_ENTERED_GAME);
+         */
     }
 
     public void broadcast(String name, String message) {
@@ -107,7 +125,7 @@ public class GameServer{
 
         private String name;
         private Socket playerSocket;
-        private static BufferedWriter out;
+        private BufferedWriter out;
         private String playerChoiceInput;
 
         private int playerTurn;
@@ -121,9 +139,12 @@ public class GameServer{
 
         @Override
         public void run() {
-
             try {
-                addPlayer(this);
+                if (maxNumberOfPlayers<=2) {
+                    addPlayer(this);
+                } else {
+                    addPlayerToWaitingQueue(this);
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -144,16 +165,15 @@ public class GameServer{
                     }
                         playerChoiceInput = in.nextLine();
 
+                    //TODO filter the input from the player - he can only input 0-6. (regex) //JP
 
-                    //TODO filter the input from the player - he can only input 0-6. (regex)
+                    //TODO playerChoiceInput -> connectFour.placePiece(playerChoiceInput)...  //FILIPE
 
-                    //TODO playerChoiceInput -> connectFour.placePiece(playerChoiceInput)...
-
-                    //TODO checkWinner
+                    //TODO checkWinner //RUI
                     if (true/*connectFour.checkWinner(this)*/){
                         //broadcast MESSAGE.WINNER
                         //broadcast prettyBoard with winner
-                        //if ... command wants to play again ? resetBoard : socketCloses; BOTH PLAYERS MUST ACCEPT TO PLAYAGAIN
+                        //if ... command wants to play again ? resetBoard : socketCloses; BOTH PLAYERS MUST ACCEPT TO PLAYAGAIN //TODO:playagain //JP
                     }
 
                     //TODO checkDraw

@@ -2,92 +2,116 @@ package academy.mindswap.game;
 import java.util.Scanner;
 
 public class ConnectFour {
-
 /*
     public static void main(String[] args) {
 
-        Game game1 = new Game();
+            ConnectFour game1 = new ConnectFour();
 
 
-        //FILL BOARD WITH O's
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 6; j++) {
-                game1.board[i][j] = "O";
+            //FILL BOARD WITH O's
+            for (int i = 0; i < 7; i++) {
+                for (int j = 0; j < 6; j++) {
+                    game1.board[i][j] = "⬤";
+                }
             }
-        }
 
-        game1.updatePrettyBoard();
-        System.out.println(game1.prettyBoard);
+            game1.updatePrettyBoard();
+            System.out.println(game1.prettyBoard);
 
-        //VERIFICATIONS
+            //VERIFICATIONS
 
-        //CHECK FOR HORIZONTAL WIN
-        System.out.println("-".repeat(20) + "CHECK FOR HORIZONTAL WIN"+"-".repeat(20));
+            //CHECK FOR HORIZONTAL WIN
+            System.out.println("-".repeat(20) + "CHECK FOR HORIZONTAL WIN"+"-".repeat(20));
 
-        for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
-            for (int j = 0; j < 6; j++) {
-                game1.board[i][j] = " ";
+            for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
+                for (int j = 0; j < 6; j++) {
+                    game1.board[i][j] = "⬤";
+                }
             }
-        }
+            //WINNER COMBO
+            game1.board[2][3] = "@";
+            game1.board[3][3] = "@";
+            game1.board[4][3] = "@";
+            game1.board[5][3] = "@";
 
-        game1.board[2][3] = "@";
-        game1.board[3][3] = "@";
-        game1.board[4][3] = "@";
-        game1.board[5][3] = "@";
-        game1.checkWinner("@");
-        System.out.println(game1.updatePrettyBoard());
-        System.out.println("Game winner? " + game1.checkWinner("@"));
+            //OTHER INSERTS
+            game1.board[0][0] = "R";
+            game1.board[1][0] = "Y";
+            game1.board[2][0] = "R";
+            game1.board[3][0] = "Y";
 
-        //CHECK FOR VERTICAL WIN
-        System.out.println("-".repeat(20) + "CHECK FOR VERTICAL WIN"+"-".repeat(20));
-        for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
-            for (int j = 0; j < 6; j++) {
-                game1.board[i][j] = "O";
+            game1.checkWinner("@");
+            System.out.println(game1.updatePrettyBoard());
+            System.out.println("Game winner? " + game1.checkWinner("@"));
+
+            //CHECK FOR VERTICAL WIN
+            System.out.println("-".repeat(20) + "CHECK FOR VERTICAL WIN"+"-".repeat(20));
+            for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
+                for (int j = 0; j < 6; j++) {
+                    game1.board[i][j] = "⬤";
+                }
             }
-        }
-        game1.board[3][2] = "@";
-        game1.board[3][3] = "@";
-        game1.board[3][4] = "@";
-        game1.board[3][5] = "@";
+            //WINNER COMBO
+            game1.board[3][2] = "@";
+            game1.board[3][3] = "@";
+            game1.board[3][4] = "@";
+            game1.board[3][5] = "@";
+            //OTHER INSERTS
+            game1.board[0][0] = "R";
+            game1.board[1][0] = "Y";
+            game1.board[2][0] = "R";
+            game1.board[3][0] = "Y";
 
-        System.out.println("Game winner? " + game1.checkWinner("@"));
-        System.out.println(game1.updatePrettyBoard());
+            System.out.println("Game winner? " + game1.checkWinner("@"));
+            System.out.println(game1.updatePrettyBoard());
 
 
 
-        //CHECK FOR SLASH WIN /
-        System.out.println("-".repeat(20) + "CHECK FOR SLASH WIN /"+"-".repeat(20));
-        for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
-            for (int j = 0; j < 6; j++) {
-                game1.board[i][j] = " ";
+            //CHECK FOR SLASH WIN /
+            System.out.println("-".repeat(20) + "CHECK FOR SLASH WIN /"+"-".repeat(20));
+            for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
+                for (int j = 0; j < 6; j++) {
+                    game1.board[i][j] = "⬤";
+                }
             }
-        }
-        game1.board[1][2] = "@";
-        game1.board[2][3] = "@";
-        game1.board[3][4] = "@";
-        game1.board[4][5] = "@";
+            //WINNER COMBO
+            game1.board[1][2] = "@";
+            game1.board[2][3] = "@";
+            game1.board[3][4] = "@";
+            game1.board[4][5] = "@";
+            //OTHER INSERTS
+            game1.board[0][0] = "R";
+            game1.board[1][0] = "Y";
+            game1.board[2][0] = "R";
+            game1.board[3][0] = "Y";
 
-        System.out.println("Game winner? " + game1.checkWinner("@"));
-        System.out.println(game1.updatePrettyBoard());
+            System.out.println("Game winner? " + game1.checkWinner("@"));
+            System.out.println(game1.updatePrettyBoard());
 
-        //CHECK FOR BACKSLASH WIN \
-        System.out.println("-".repeat(20) + "CHECK FOR BACKSLASH WIN "+"-".repeat(20));
-        for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
-            for (int j = 0; j < 6; j++) {
-                game1.board[i][j] = " ";
+            //CHECK FOR BACKSLASH WIN \
+            System.out.println("-".repeat(20) + "CHECK FOR BACKSLASH WIN "+"-".repeat(20));
+            for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
+                for (int j = 0; j < 6; j++) {
+                    game1.board[i][j] = "⬤";
+                }
             }
+            //WINNER COMBO
+            game1.board[5][2] = "@";
+            game1.board[4][3] = "@";
+            game1.board[3][4] = "@";
+            game1.board[2][5] = "@";
+            //OTHER INSERTS
+            game1.board[0][0] = "R";
+            game1.board[1][0] = "Y";
+            game1.board[2][0] = "R";
+            game1.board[3][0] = "Y";
+
+            System.out.println("Game winner? " + game1.checkWinner("@"));
+            System.out.println(game1.updatePrettyBoard());
+
         }
-        game1.board[5][2] = "@";
-        game1.board[4][3] = "@";
-        game1.board[3][4] = "@";
-        game1.board[2][5] = "@";
+ */
 
-        System.out.println("Game winner? " + game1.checkWinner("@"));
-        System.out.println(game1.updatePrettyBoard());
-
-
-    }
-*/
     private String player1piece = "B";
     private String player2piece = "R";
     private String player;
@@ -129,22 +153,24 @@ public class ConnectFour {
             numberOfPlays++;
             updatePrettyBoard();
         }
+
     }
 
-    //TODO: UPDATE
+
     private String updatePrettyBoard() {
-        prettyBoard = "|---|---|---|---|---|---|---|\n" +
-                "| " + board[0][5] + " | " + board[1][5] + " | " + board[2][5] + " | " + board[3][5] + " | " + board[4][5] + " | " + board[5][5] + " | " + board[6][5] + " |\n" +
-                "| " + board[0][4] + " | " + board[1][4] + " | " + board[2][4] + " | " + board[3][4] + " | " + board[4][4] + " | " + board[5][4] + " | " + board[6][4] + " |\n" +
-                "| " + board[0][3] + " | " + board[1][3] + " | " + board[2][3] + " | " + board[3][3] + " | " + board[4][3] + " | " + board[5][3] + " | " + board[6][3] + " |\n" +
-                "| " + board[0][2] + " | " + board[1][2] + " | " + board[2][2] + " | " + board[3][2] + " | " + board[4][2] + " | " + board[5][2] + " | " + board[6][2] + " |\n" +
-                "| " + board[0][1] + " | " + board[1][1] + " | " + board[2][1] + " | " + board[3][1] + " | " + board[4][1] + " | " + board[5][1] + " | " + board[6][1] + " |\n" +
-                "| " + board[0][0] + " | " + board[1][0] + " | " + board[2][0] + " | " + board[3][0] + " | " + board[4][0] + " | " + board[5][0] + " | " + board[6][0] + " |\n" +
-                "|---+---+---+---+---+---+---+\n" +
-                "| 0   1   2   3   4   5   6 |\n";
+        prettyBoard = CharactersAndColors.BLUE_BACKGROUND + "|----+----+----+----+----+----+----|"+CharactersAndColors.RESET+"\n" +
+                CharactersAndColors.BLUE_BACKGROUND + "| " + board[0][5] + " | " + board[1][5] + " | " + board[2][5] + " | " + board[3][5] + " | " + board[4][5] + " | " + board[5][5] + " | " + board[6][5] + " |"+CharactersAndColors.RESET+"\n" +
+                CharactersAndColors.BLUE_BACKGROUND + "| " + board[0][4] + " | " + board[1][4] + " | " + board[2][4] + " | " + board[3][4] + " | " + board[4][4] + " | " + board[5][4] + " | " + board[6][4] + " |"+CharactersAndColors.RESET+"\n" +
+                CharactersAndColors.BLUE_BACKGROUND + "| " + board[0][3] + " | " + board[1][3] + " | " + board[2][3] + " | " + board[3][3] + " | " + board[4][3] + " | " + board[5][3] + " | " + board[6][3] + " |"+CharactersAndColors.RESET+"\n" +
+                CharactersAndColors.BLUE_BACKGROUND + "| " + board[0][2] + " | " + board[1][2] + " | " + board[2][2] + " | " + board[3][2] + " | " + board[4][2] + " | " + board[5][2] + " | " + board[6][2] + " |"+CharactersAndColors.RESET+"\n" +
+                CharactersAndColors.BLUE_BACKGROUND + "| " + board[0][1] + " | " + board[1][1] + " | " + board[2][1] + " | " + board[3][1] + " | " + board[4][1] + " | " + board[5][1] + " | " + board[6][1] + " |"+CharactersAndColors.RESET+"\n" +
+                CharactersAndColors.BLUE_BACKGROUND + "| " + board[0][0] + " | " + board[1][0] + " | " + board[2][0] + " | " + board[3][0] + " | " + board[4][0] + " | " + board[5][0] + " | " + board[6][0] + " |"+CharactersAndColors.RESET+"\n" +
+                CharactersAndColors.BLUE_BACKGROUND + "|----+----+----+----+----+----+----+" + CharactersAndColors.RESET+"\n"+
+                CharactersAndColors.BLUE_BACKGROUND + "|"+ CharactersAndColors.RESET+"  0    1    2    3    4    5    6 "+CharactersAndColors.BLUE_BACKGROUND+"|"+CharactersAndColors.RESET;
 
-
-        prettyBoard = prettyBoard.replace("W","\033[0;32mX\033[0m");
+        prettyBoard = prettyBoard.replace("W", CharactersAndColors.CIRCLE_GREEN + CharactersAndColors.BLUE_BACKGROUND);
+        prettyBoard = prettyBoard.replace("R", CharactersAndColors.CIRCLE_RED + CharactersAndColors.BLUE_BACKGROUND);
+        prettyBoard = prettyBoard.replace("Y", CharactersAndColors.CIRCLE_YELLOW + CharactersAndColors.BLUE_BACKGROUND);
         return prettyBoard;
     }
 
@@ -175,6 +201,10 @@ public class ConnectFour {
         for (int i = 0; i < boardWidth - 3; i++) {
             for (int j = 0; j < boardHeight; j++) {
                 if (this.board[i][j] == playerTurn && this.board[i + 1][j] == playerTurn && this.board[i + 2][j] == playerTurn && this.board[i + 3][j] == playerTurn) {
+                    this.board[i][j] = "W";
+                    this.board[i + 1][j] = "W";
+                    this.board[i + 2][j] = "W";
+                    this.board[i + 3][j] = "W";
                     return true;
                 }
             }
@@ -182,19 +212,30 @@ public class ConnectFour {
         // slashDiagonalCheck
         for (int i = 3; i < boardWidth; i++) {
             for (int j = 0; j < boardHeight - 3; j++) {
-                if (this.board[i][j] == playerTurn && this.board[i - 1][j + 1] == playerTurn && this.board[i - 2][j + 2] == playerTurn && this.board[i - 3][j + 3] == playerTurn)
+                if (this.board[i][j] == playerTurn && this.board[i - 1][j + 1] == playerTurn && this.board[i - 2][j + 2] == playerTurn && this.board[i - 3][j + 3] == playerTurn) {
+                    this.board[i][j] = "W";
+                    this.board[i - 1][j + 1] = "W";
+                    this.board[i - 2][j + 2] = "W";
+                    this.board[i - 3][j + 3] = "W";
                     return true;
+                }
             }
         }
         // backslashDiagonalCheck
         for (int i = 3; i < boardWidth; i++) {
             for (int j = 3; j < boardHeight; j++) {
-                if (this.board[i][j] == playerTurn && this.board[i - 1][j - 1] == playerTurn && this.board[i - 2][j - 2] == playerTurn && this.board[i - 3][j - 3] == playerTurn)
+                if (this.board[i][j] == playerTurn && this.board[i - 1][j - 1] == playerTurn && this.board[i - 2][j - 2] == playerTurn && this.board[i - 3][j - 3] == playerTurn) {
+                    this.board[i][j] =  "W";
+                    this.board[i - 1][j - 1] ="W";
+                    this.board[i - 2][j - 2] ="W";
+                    this.board[i - 3][j - 3] ="W";
                     return true;
+                }
             }
         }
         return false;
     }
+
 
     public String getPrettyBoard() {
         return prettyBoard;
