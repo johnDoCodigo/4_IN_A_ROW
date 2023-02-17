@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class GameServer{
+public class GameServer {
     private ServerSocket serverSocket;
     private ExecutorService service;
     private final List<playerConnectionHandler> players;
@@ -52,11 +52,11 @@ public class GameServer{
         Socket playerSocket = serverSocket.accept(); //Blocking method
         playerConnectionHandler playerConnectionHandler =
                 new playerConnectionHandler(playerSocket,
-                Messages.DEFAULT_NAME + numberOfConnections);
+                        Messages.DEFAULT_NAME + numberOfConnections);
         service.submit(playerConnectionHandler);
     }
 
-    private String getPlayerNameInput(Socket playerSocket)  throws IOException {
+    private String getPlayerNameInput(Socket playerSocket) throws IOException {
         BufferedReader consoleInput = new BufferedReader(new InputStreamReader(playerSocket.getInputStream())); //reads input from the input stream of the clientSocket object, which represents the client's connection to the server.
         BufferedWriter outputName = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream())); //writes output to the output stream of the clientSocket object, which represents the client's connection to the server.
         outputName.write("Please insert your username"); //writes the message "Please insert your username" to the client through the output stream
@@ -105,6 +105,7 @@ public class GameServer{
                 .forEach(handler -> handler.send(message));
     }
 
+
     public String listPlayers() {
         StringBuffer buffer = new StringBuffer();
         players.forEach(client -> buffer.append(client.getName()).append("\n"));
@@ -123,25 +124,30 @@ public class GameServer{
     }
 
     public class playerConnectionHandler implements Runnable {
-
         private String name;
         private Socket playerSocket;
         private BufferedWriter out;
         private String playerChoiceInput;
-
         private int playerTurn;
+        private String playerPieceLetter;
 
         public playerConnectionHandler(Socket playerSocket, String name) throws IOException {
             this.playerSocket = playerSocket;
             this.name = name;
             this.out = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream()));
             this.playerTurn = getNumberOfConnections();
+            if (playerTurn == 2) {
+                this.playerPieceLetter = "R";
+            }
+            if (playerTurn == 1) {
+                this.playerPieceLetter = "Y";
+            }
         }
 
         @Override
         public void run() {
             try {
-                if (maxNumberOfPlayers<=2) {
+                if (maxNumberOfPlayers <= 2) {
                     addPlayer(this);
                 } else {
                     addPlayerToWaitingQueue(this);
@@ -150,53 +156,73 @@ public class GameServer{
                 throw new RuntimeException(e);
             }
 
-            try {
 
+            try {
                 Scanner in = new Scanner(playerSocket.getInputStream());
                 while (in.hasNext()) {
+                    System.out.println(getName() + "1");
+                    System.out.println("player turn: " + playerTurn + playerPieceLetter);
+                    if ((connectFour.getNumberOfPlays() % 2 == 0 && (playerTurn % 2 == 0))) {
+                        broadcastToPlayer(Messages.WAIT_TURN);
+                    }
 
-                    //Todo -> if player turn, continue, else, wait.
-                    synchronized (this) {
-                        if (connectFour.getNumberOfPlays() % (this.playerTurn) == 0 ) {
-                            continue;
+                    System.out.println(getName() + "2");
+                    System.out.println("player turn: " + playerTurn + playerPieceLetter);
+
+                    //User Input & to Int
+                    playerChoiceInput = in.nextLine();
+                    int playerChoiceInputInt = Integer.parseInt(playerChoiceInput);
+
+                    System.out.println(getName() + "3");
+                    System.out.println("player turn: " + playerTurn + playerPieceLetter);
+
+                    //Check for commands
+                    if (isCommand(playerChoiceInput)) {
+                        dealWithCommand(playerChoiceInput);
+                        continue;
+                    }
+
+                    System.out.println(getName() + "4");
+                    System.out.println("player turn: " + playerTurn + playerPieceLetter);
+
+                    //Check for invalid input
+                    while (playerChoiceInputInt < 0 || playerChoiceInputInt > 6) {
+                        broadcastToPlayer(Messages.INVALID_COLUMN);
+                        playerChoiceInputInt = in.nextInt();
+                    }
+
+                    System.out.println(getName() + "5");
+                    //Places players choices
+                    connectFour.placePiece(Integer.parseInt(playerChoiceInput));
+                    System.out.println(getName() + "5.1");
+
+                    broadcastToPlayer(connectFour.getPrettyBoard());
+                    System.out.println(connectFour.getPrettyBoard());
+
+                    System.out.println(getName() + "6");
+                    //Check for winner
+                    if (connectFour.checkWinner(playerPieceLetter)) {
+                        connectFour.gameOver(getName()); // gives sound - to check
+                        if (playerTurn == 2) {
+                            broadcast(getName(),Messages.PLAYER1_WIN);
                         } else {
-                            wait();
-                            notifyAll();
-                        }
-                    }
-                        playerChoiceInput = in.nextLine();
-
-                    //TODO filter the input from the player - he can only input 0-6. (regex) //JP
-
-                    //TODO playerChoiceInput -> connectFour.placePiece(playerChoiceInput)...  //FILIPE
-
-                    //TODO checkWinner //RUI
-                    if (true/*connectFour.checkWinner(this)*/){
-                        //broadcast MESSAGE.WINNER
-                        //broadcast prettyBoard with winner
-                        //if ... command wants to play again ? resetBoard : socketCloses; BOTH PLAYERS MUST ACCEPT TO PLAYAGAIN //TODO:playagain //JP
-                    }
-
-                    //TODO checkDraw
-                    synchronized (this) {
-                        if (connectFour.checkDraw()) {
-                            connectFour.getPrettyBoard();
-                            broadcastToPlayer(Messages.CHECK_DRAW);
-                        }
-                        if (isCommand(playerChoiceInput)) {
-                            dealWithCommand(playerChoiceInput);
-                            continue;
+                            broadcast(getName(),Messages.PLAYER2_WIN);
                         }
                     }
 
-                    broadcast(name, connectFour.getPrettyBoard());
-                    notifyAll();
+                    System.out.println(getName() + "7");
+                    //Check for draw
+                    if (connectFour.checkDraw()) {
+                        broadcastToPlayer(Messages.CHECK_DRAW);
+                        broadcastToPlayer(Messages.PLAY_AGAIN);
+                    }
+
+                    System.out.println(getName() + "8");
+
                 }
 
             } catch (IOException e) {
                 System.err.println(Messages.PLAYER_ERROR + e.getMessage());
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             } finally {
                 removePlayer(this);
             }

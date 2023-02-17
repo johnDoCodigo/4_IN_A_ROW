@@ -116,8 +116,7 @@ public class ConnectFour {
         }
  */
 
-    private String player1piece = "B";
-    private String player2piece = "R";
+
     private String player;
     private String[][] board;
     private String prettyBoard;
@@ -133,7 +132,7 @@ public class ConnectFour {
     private void fillEmptyBoard() {
         for (int x = 0; x < 7; x++) {
             for (int y = 0; y < 6; y++) {
-                this.board[x][y] = " ";
+                this.board[x][y] = "⬤";
             }
         }
     }
@@ -145,7 +144,7 @@ public class ConnectFour {
                 System.out.println("Please enter a valid column from 0 to 6.");
             }
             for (int y = 0; y < 6; y++) {
-                if (board[playerChoiceInput][y].equals(" ")) {
+                if (board[playerChoiceInput][y].equals("⬤")) {
                     if (numberOfPlays % 2 == 0) {
                         board[playerChoiceInput][y] = "R";
                         break;
@@ -166,7 +165,8 @@ public class ConnectFour {
 
 
     private String updatePrettyBoard() {
-        prettyBoard = CharactersAndColors.BLUE_BACKGROUND + "|----+----+----+----+----+----+----|"+CharactersAndColors.RESET+"\n" +
+        prettyBoard = "\n"+
+                CharactersAndColors.BLUE_BACKGROUND + "|----+----+----+----+----+----+----|"+CharactersAndColors.RESET+"\n" +
                 CharactersAndColors.BLUE_BACKGROUND + "| " + board[0][5] + " | " + board[1][5] + " | " + board[2][5] + " | " + board[3][5] + " | " + board[4][5] + " | " + board[5][5] + " | " + board[6][5] + " |"+CharactersAndColors.RESET+"\n" +
                 CharactersAndColors.BLUE_BACKGROUND + "| " + board[0][4] + " | " + board[1][4] + " | " + board[2][4] + " | " + board[3][4] + " | " + board[4][4] + " | " + board[5][4] + " | " + board[6][4] + " |"+CharactersAndColors.RESET+"\n" +
                 CharactersAndColors.BLUE_BACKGROUND + "| " + board[0][3] + " | " + board[1][3] + " | " + board[2][3] + " | " + board[3][3] + " | " + board[4][3] + " | " + board[5][3] + " | " + board[6][3] + " |"+CharactersAndColors.RESET+"\n" +
@@ -176,6 +176,7 @@ public class ConnectFour {
                 CharactersAndColors.BLUE_BACKGROUND + "|----+----+----+----+----+----+----+" + CharactersAndColors.RESET+"\n"+
                 CharactersAndColors.BLUE_BACKGROUND + "|"+ CharactersAndColors.RESET+"  0    1    2    3    4    5    6 "+CharactersAndColors.BLUE_BACKGROUND+"|"+CharactersAndColors.RESET;
 
+        //prettyBoard = prettyBoard.replace("O","⬤");
         prettyBoard = prettyBoard.replace("W", CharactersAndColors.CIRCLE_GREEN + CharactersAndColors.BLUE_BACKGROUND);
         prettyBoard = prettyBoard.replace("R", CharactersAndColors.CIRCLE_RED + CharactersAndColors.BLUE_BACKGROUND);
         prettyBoard = prettyBoard.replace("Y", CharactersAndColors.CIRCLE_YELLOW + CharactersAndColors.BLUE_BACKGROUND);
@@ -184,9 +185,10 @@ public class ConnectFour {
 
     public boolean checkDraw() {
         if (numberOfPlays == 42) {
-          //  System.out.println("Game over. It's a draw. Try again!");
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 
     public boolean checkWinner(String playerTurn) {
@@ -260,14 +262,6 @@ public class ConnectFour {
         return prettyBoard;
     }
 
-    public String getPlayer1piece() {
-        return player1piece;
-    }
-
-    public String getPlayer2piece() {
-        return player2piece;
-    }
-
     public String getPlayer() {
         return player;
     }
@@ -279,12 +273,11 @@ public class ConnectFour {
     public int getNumberOfPlays() {
         return numberOfPlays;
     }
-}
+
 
 
     public void playAgain() {
         fillEmptyBoard();
         this.numberOfPlays = 0;
-        System.out.println("ta a funcionar?");
     }
 }

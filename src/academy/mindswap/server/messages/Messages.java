@@ -10,11 +10,6 @@ public class Messages {
             /playagain -> starts a new game
             /list -> gets you the list of connected players
             /quit -> exits the gameServer
-            
-            
-            
-            
-            /shout <message> -> lets you shout a message to all connected clients
             /whisper <username> <message> -> lets you whisper a message to a single connected player
             /name <new name> -> lets you change your name
             /quit -> exits the gameServer""";
@@ -30,6 +25,9 @@ public class Messages {
     public static final String PLAY_AGAIN = "Do you want to play again?";
     public static final String WAITING_QUEUE = "You have been added to the waiting queue";
     public static final String CHECK_DRAW = "Game over. It's a draw. If you want do play again please write /playagain.";
+
+    public static final String INVALID_COLUMN = "You must choose a column between 0-6.";
+    public static final String WAIT_TURN = "You must wait for your turn.";
 
     public static final String PLAYER1_WIN =
             "██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗      ██╗    ██╗    ██╗██╗███╗   ██╗███████╗██╗\n" +
