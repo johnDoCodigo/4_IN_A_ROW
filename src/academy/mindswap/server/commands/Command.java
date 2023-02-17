@@ -7,8 +7,9 @@ public enum Command {
     WHISPER("/whisper", new WhisperHandler()),
     QUIT("/quit", new QuitHandler()),
     SHOUT("/shout", new ShoutHandler()),
+    NAME("/name", new NameHandler()),
+    PLAYAGAIN("/playagain", new PlayAgainHandler());
 
-    NAME("/name", new NameHandler());
 
     private String description;
     private CommandHandler handler;
@@ -26,7 +27,6 @@ public enum Command {
         }
         return null;
     }
-
     public CommandHandler getHandler() {
         return handler;
     }
