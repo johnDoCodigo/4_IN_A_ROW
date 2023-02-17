@@ -3,12 +3,10 @@ package academy.mindswap.server;
 import academy.mindswap.game.ConnectFour;
 import academy.mindswap.server.commands.Command;
 import academy.mindswap.server.messages.Messages;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,18 +36,17 @@ public class GameServer {
             acceptConnection(numberOfConnections); //Blocking method
             ++numberOfConnections;
         }
-
     }
 
     public void acceptConnection(int numberOfConnections) throws IOException {
         Socket playerSocket = serverSocket.accept(); //Blocking method
         playerConnectionHandler playerConnectionHandler =
                 new playerConnectionHandler(playerSocket,
-                Messages.DEFAULT_NAME + numberOfConnections);
+                        Messages.DEFAULT_NAME + numberOfConnections);
         service.submit(playerConnectionHandler);
     }
 
-    private String getPlayerNameInput(Socket playerSocket)  throws IOException {
+    private String getPlayerNameInput(Socket playerSocket) throws IOException {
         BufferedReader consoleInput = new BufferedReader(new InputStreamReader(playerSocket.getInputStream())); //reads input from the input stream of the clientSocket object, which represents the client's connection to the server.
         BufferedWriter outputName = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream())); //writes output to the output stream of the clientSocket object, which represents the client's connection to the server.
         outputName.write("Please insert your username"); //writes the message "Please insert your username" to the client through the output stream
@@ -78,7 +75,6 @@ public class GameServer {
                 .forEach(handler -> handler.send(name + ": " + message));
     }
 
-
     public String listPlayers() {
         StringBuffer buffer = new StringBuffer();
         players.forEach(client -> buffer.append(client.getName()).append("\n"));
@@ -97,12 +93,10 @@ public class GameServer {
     }
 
     public class playerConnectionHandler implements Runnable {
-
         private String name;
         private Socket playerSocket;
         private BufferedWriter out;
         private String playerChoiceInput;
-
         private int playerTurn;
 
         public playerConnectionHandler(Socket playerSocket, String name) throws IOException {
@@ -122,12 +116,12 @@ public class GameServer {
             }
 
             try {
-               // BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                // BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 Scanner in = new Scanner(playerSocket.getInputStream());
                 while (in.hasNext()) {
 
                     //Todo -> if player turn, continue, else, wait.
-                    if (connectFour.getNumberOfPlays()%(this.playerTurn)==0) { //0,1,2,3,4,5 %
+                    if (connectFour.getNumberOfPlays() % (this.playerTurn) == 0) { //0,1,2,3,4,5 %
                         continue;
                     } else {
                         wait();
@@ -140,14 +134,14 @@ public class GameServer {
                     //TODO playerChoiceInput -> connectFour.placePiece(playerChoiceInput)...
 
                     //TODO checkWinner
-                    if (true/*connectFour.checkWinner(this)*/){
+                    if (true/*connectFour.checkWinner(this)*/) {
                         //broadcast MESSAGE.WINNER
                         //broadcast prettyBoard with winner
                         //if ... command wants to play again ? resetBoard : socketCloses; BOTH PLAYERS MUST ACCEPT TO PLAYAGAIN
                     }
 
                     //TODO checkDraw
-                    if (true/*connectFour.checkWinner(this)*/){
+                    if (true/*connectFour.checkWinner(this)*/) {
                         //broadcast MESSAGE.DRAW
                         //broadcast prettyBoard
                         //if ... command wants to play again ? resetBoard : socketCloses; BOTH PLAYERS MUST ACCEPT TO PLAYAGAIN
@@ -160,9 +154,6 @@ public class GameServer {
                     if (playerChoiceInput.equals("")) {
                         continue;
                     }
-
-
-
 
 
                     broadcast(name, connectFour.getPrettyBoard());
@@ -230,4 +221,5 @@ public class GameServer {
     public int getNumberOfConnections() {
         return numberOfConnections;
     }
+
 }

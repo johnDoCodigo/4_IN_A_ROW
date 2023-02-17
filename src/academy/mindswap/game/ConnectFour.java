@@ -1,113 +1,116 @@
 package academy.mindswap.game;
+import academy.mindswap.server.commands.PlayAgainHandler;
 import java.util.Scanner;
 
 public class ConnectFour {
-/*
-    public static void main(String[] args) {
+    /*
+        public static void main(String[] args) {
 
-        Game game1 = new Game();
+            Game game1 = new Game();
 
 
-        //FILL BOARD WITH O's
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 6; j++) {
-                game1.board[i][j] = "O";
+            //FILL BOARD WITH O's
+            for (int i = 0; i < 7; i++) {
+                for (int j = 0; j < 6; j++) {
+                    game1.board[i][j] = "O";
+                }
             }
-        }
 
-        game1.updatePrettyBoard();
-        System.out.println(game1.prettyBoard);
+            game1.updatePrettyBoard();
+            System.out.println(game1.prettyBoard);
 
-        //VERIFICATIONS
+            //VERIFICATIONS
 
-        //CHECK FOR HORIZONTAL WIN
-        System.out.println("-".repeat(20) + "CHECK FOR HORIZONTAL WIN"+"-".repeat(20));
+            //CHECK FOR HORIZONTAL WIN
+            System.out.println("-".repeat(20) + "CHECK FOR HORIZONTAL WIN"+"-".repeat(20));
 
-        for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
-            for (int j = 0; j < 6; j++) {
-                game1.board[i][j] = " ";
+            for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
+                for (int j = 0; j < 6; j++) {
+                    game1.board[i][j] = " ";
+                }
             }
-        }
 
-        game1.board[2][3] = "@";
-        game1.board[3][3] = "@";
-        game1.board[4][3] = "@";
-        game1.board[5][3] = "@";
-        game1.checkWinner("@");
-        System.out.println(game1.updatePrettyBoard());
-        System.out.println("Game winner? " + game1.checkWinner("@"));
+            game1.board[2][3] = "@";
+            game1.board[3][3] = "@";
+            game1.board[4][3] = "@";
+            game1.board[5][3] = "@";
+            game1.checkWinner("@");
+            System.out.println(game1.updatePrettyBoard());
+            System.out.println("Game winner? " + game1.checkWinner("@"));
 
-        //CHECK FOR VERTICAL WIN
-        System.out.println("-".repeat(20) + "CHECK FOR VERTICAL WIN"+"-".repeat(20));
-        for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
-            for (int j = 0; j < 6; j++) {
-                game1.board[i][j] = "O";
+            //CHECK FOR VERTICAL WIN
+            System.out.println("-".repeat(20) + "CHECK FOR VERTICAL WIN"+"-".repeat(20));
+            for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
+                for (int j = 0; j < 6; j++) {
+                    game1.board[i][j] = "O";
+                }
             }
-        }
-        game1.board[3][2] = "@";
-        game1.board[3][3] = "@";
-        game1.board[3][4] = "@";
-        game1.board[3][5] = "@";
+            game1.board[3][2] = "@";
+            game1.board[3][3] = "@";
+            game1.board[3][4] = "@";
+            game1.board[3][5] = "@";
 
-        System.out.println("Game winner? " + game1.checkWinner("@"));
-        System.out.println(game1.updatePrettyBoard());
-
+            System.out.println("Game winner? " + game1.checkWinner("@"));
+            System.out.println(game1.updatePrettyBoard());
 
 
-        //CHECK FOR SLASH WIN /
-        System.out.println("-".repeat(20) + "CHECK FOR SLASH WIN /"+"-".repeat(20));
-        for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
-            for (int j = 0; j < 6; j++) {
-                game1.board[i][j] = " ";
+
+            //CHECK FOR SLASH WIN /
+            System.out.println("-".repeat(20) + "CHECK FOR SLASH WIN /"+"-".repeat(20));
+            for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
+                for (int j = 0; j < 6; j++) {
+                    game1.board[i][j] = " ";
+                }
             }
-        }
-        game1.board[1][2] = "@";
-        game1.board[2][3] = "@";
-        game1.board[3][4] = "@";
-        game1.board[4][5] = "@";
+            game1.board[1][2] = "@";
+            game1.board[2][3] = "@";
+            game1.board[3][4] = "@";
+            game1.board[4][5] = "@";
 
-        System.out.println("Game winner? " + game1.checkWinner("@"));
-        System.out.println(game1.updatePrettyBoard());
+            System.out.println("Game winner? " + game1.checkWinner("@"));
+            System.out.println(game1.updatePrettyBoard());
 
-        //CHECK FOR BACKSLASH WIN \
-        System.out.println("-".repeat(20) + "CHECK FOR BACKSLASH WIN "+"-".repeat(20));
-        for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
-            for (int j = 0; j < 6; j++) {
-                game1.board[i][j] = " ";
+            //CHECK FOR BACKSLASH WIN \
+            System.out.println("-".repeat(20) + "CHECK FOR BACKSLASH WIN "+"-".repeat(20));
+            for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
+                for (int j = 0; j < 6; j++) {
+                    game1.board[i][j] = " ";
+                }
             }
+            game1.board[5][2] = "@";
+            game1.board[4][3] = "@";
+            game1.board[3][4] = "@";
+            game1.board[2][5] = "@";
+
+            System.out.println("Game winner? " + game1.checkWinner("@"));
+            System.out.println(game1.updatePrettyBoard());
+
+
         }
-        game1.board[5][2] = "@";
-        game1.board[4][3] = "@";
-        game1.board[3][4] = "@";
-        game1.board[2][5] = "@";
+    */
 
-        System.out.println("Game winner? " + game1.checkWinner("@"));
-        System.out.println(game1.updatePrettyBoard());
-
-
-    }
-*/
     private String player1piece = "B";
     private String player2piece = "R";
     private String player;
     private String[][] board;
     private String prettyBoard;
-    private int numberOfPlays;
+    private static int numberOfPlays;
+
 
     public ConnectFour() {
         this.board = new String[7][6];
         fillEmptyBoard();
         this.numberOfPlays = 0;
-
     }
 
-    private void fillEmptyBoard() {
+    public void fillEmptyBoard() {
         for (int x = 0; x < 7; x++) {
             for (int y = 0; y < 6; y++) {
                 this.board[x][y] = " ";
             }
         }
     }
+
 
     public void placePiece(int playerChoiceInput) {
 
@@ -144,7 +147,7 @@ public class ConnectFour {
                 "| 0   1   2   3   4   5   6 |\n";
 
 
-        prettyBoard = prettyBoard.replace("W","\033[0;32mX\033[0m");
+        prettyBoard = prettyBoard.replace("W", "\033[0;32mX\033[0m");
         return prettyBoard;
     }
 
@@ -220,4 +223,3 @@ public class ConnectFour {
         return numberOfPlays;
     }
 }
-
