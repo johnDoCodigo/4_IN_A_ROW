@@ -60,7 +60,7 @@ public class GameServer {
         }
     }
 
-    private synchronized boolean isMaxPlayerReached() {
+    public synchronized boolean isMaxPlayerReached() {
         if (playerList.size() == maxPlayersPerGame) {
             return true;
         } else {
@@ -180,7 +180,9 @@ public class GameServer {
         private String name = "";
         private Socket playerSocket;
         private BufferedWriter out;
-        private BufferedReader in;
+
+        //private BufferedReader in;
+        Scanner in;
         private String playerInput;
         private int playerTurn;
         private String playerPieceLetter;
@@ -189,7 +191,9 @@ public class GameServer {
             this.playerSocket = playerSocket;
             this.name = name;
             this.out = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream()));
-            this.in = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
+            //this.in = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
+            this.in = new Scanner(playerSocket.getInputStream());
+            /*
             this.playerTurn = getNumberOfConnections();
             if (playerTurn == 2) {
                 this.playerPieceLetter = "R";
@@ -197,7 +201,10 @@ public class GameServer {
             if (playerTurn == 1) {
                 this.playerPieceLetter = "Y";
             }
+
+             */
         }
+
 
         /*
         @Override
@@ -293,49 +300,39 @@ public class GameServer {
 
             //TODO CHOOSE 1 OR 2 OR 3
             //----------1----------
+            /*
             while (!isGameEnded) {
                 if (Thread.interrupted()) {
                     return;
                 }
             }
+             */
+
             //----------2----------
-            while (in.hasNext()) {
-                //User Input & to Int
-                playerChoiceInput = in.nextLine();
-                //Check for commands
-                if (isCommand(playerChoiceInput)) {
-                    try {
-                        dealWithCommand(playerChoiceInput);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-            //----------3----------
             while (!playerSocket.isClosed()) {
                 try {
-                    Scanner in = new Scanner(playerSocket.getInputStream());
                     playerInput = in.nextLine();
                     if (isCommand(playerInput)) {
-                        dealWithCommand(message);
+                        dealWithCommand(playerInput);
                         break;
                     }
                 } catch (IOException e) {
                     System.err.println(Messages.PLAYER_ERROR + e.getMessage());
                 }
-                if (!validInput()) {
+                /*if (!validInput()) {
                     askForGuess();
                 }
 
-
-            quit();
+                 */
+                quit();
+            }
         }
 
         public String getAnswer() {
             String message = null;
             try {
-                message = in.readLine();
-            } catch (IOException | NullPointerException e) {
+                message = in.nextLine();
+            } catch (NullPointerException e) {
                 quit();
             } finally {
                 if (message == null) {
@@ -390,8 +387,8 @@ public class GameServer {
             this.name = name;
         }
 
-        public String getPlayerChoiceInput() {
-            return playerChoiceInput;
+        public String getPlayerInput() {
+            return playerInput;
         }
 
         public void quit() {
@@ -414,4 +411,6 @@ public class GameServer {
     public ConnectFourBoard getConnectFour() {
         return connectFourBoard;
     }
+
+
 }

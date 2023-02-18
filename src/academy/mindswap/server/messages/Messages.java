@@ -3,6 +3,7 @@ package academy.mindswap.server.messages;
 public class Messages {
     public static final String SERVER_STARTED = "Server started on port: %s";
     public static final String DEFAULT_NAME = "PLAYER -";
+    public static final String PLAYER_TURN = "%s is playing now\n";
     public static final String PLAYER_ENTERED_GAME = " entered the game.";
     public static final String PLAYER_JOINED = "Player %s joined the game!\n";
     public static final String WAITING_FOR_OTHER_PLAYERS = "Waiting for other players to join the game...";
@@ -52,5 +53,7 @@ public class Messages {
             "                                                                                                   ";
 
     public static final String NEW_GAME = "A NEW GAME WAS CREATED";
+    public static final String START_GAME = "\n--The WHEEL OF FORTUNE will start!--\n";
+
 
 }

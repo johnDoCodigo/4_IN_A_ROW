@@ -124,12 +124,13 @@ public class ConnectFourBoard {
     private String prettyBoard;
     private int numberOfPlays;
 
+
     public ConnectFourBoard() {
         this.board = new String[7][6];
         fillEmptyBoard();
         this.numberOfPlays = 0;
-    }
 
+    }
 
     private void fillEmptyBoard() {
         for (int x = 0; x < 7; x++) {
@@ -139,8 +140,8 @@ public class ConnectFourBoard {
         }
     }
 
-    public void placePiece(int playerChoiceInput) {
-        if (!checkWinner(player) && numberOfPlays < 42) {
+    public void placePiece(String move, int playerChoiceInput) {
+        if (!checkWinner(move) && numberOfPlays < 42) {
             if (playerChoiceInput < 0 || playerChoiceInput > 6) {
                 System.out.println("Please enter a valid column from 0 to 6.");
             }
@@ -261,10 +262,6 @@ public class ConnectFourBoard {
         return prettyBoard;
     }
 
-    public String getPlayer() {
-        return player;
-    }
-
     public String[][] getBoard() {
         return board;
     }
@@ -272,6 +269,7 @@ public class ConnectFourBoard {
     public int getNumberOfPlays() {
         return numberOfPlays;
     }
+
 
     public void playAgain() {
         fillEmptyBoard();
