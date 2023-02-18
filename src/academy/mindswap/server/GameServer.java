@@ -32,7 +32,7 @@ public class GameServer {
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         service = Executors.newCachedThreadPool();
-        numberOfConnections = 1;
+        numberOfConnections = 0;
         System.out.printf(Messages.SERVER_STARTED, port + "\n");
 
         while (maxNumberOfPlayers < 2) {
@@ -193,7 +193,7 @@ public class GameServer {
 
                     System.out.println(getName() + "5");
                     //Places players choices
-                    connectFour.placePiece(Integer.parseInt(playerChoiceInput));
+                    connectFour.placePiece(playerChoiceInputInt);
                     System.out.println(getName() + "5.1");
 
                     broadcastToPlayer(connectFour.getPrettyBoard());

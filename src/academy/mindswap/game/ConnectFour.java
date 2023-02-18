@@ -3,8 +3,6 @@ import academy.mindswap.server.messages.Messages;
 import academy.mindswap.server.sounds.Sound;
 import academy.mindswap.server.sounds.SoundFiles;
 
-import java.util.Scanner;
-
 public class ConnectFour {
 /*
     public static void main(String[] args) {
@@ -139,23 +137,24 @@ public class ConnectFour {
 
 
     public void placePiece(int playerChoiceInput) {
+        Sound sound = new Sound();
         if (!checkWinner(player) && numberOfPlays < 42) {
-            if (playerChoiceInput < 0 || playerChoiceInput > 6) {
-                System.out.println("Please enter a valid column from 0 to 6.");
-            }
+
             for (int y = 0; y < 6; y++) {
                 if (board[playerChoiceInput][y].equals("⬤")) {
                     if (numberOfPlays % 2 == 0) {
                         board[playerChoiceInput][y] = "R";
+                        //sound.getSoundClip(SoundFiles.PLAYER2_PIECE.getPath());
                         break;
                     } else {
                         board[playerChoiceInput][y] = "Y";
+                        //sound.getSoundClip(SoundFiles.PLAYER1_PIECE.getPath());
                         break;
                     }
                 }
                 if (y == 5) {
                     System.out.println("This column is full, please choose another one.");
-                    //todo pedir novo input em caso de a coluna estar cheia
+
                 }
             }
             numberOfPlays++;
