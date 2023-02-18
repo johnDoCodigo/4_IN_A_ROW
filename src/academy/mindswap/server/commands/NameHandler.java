@@ -15,7 +15,7 @@ public class NameHandler implements CommandHandler{
                 () -> {
                     playerConnectionHandler.setName(name);
                     playerConnectionHandler.send(Messages.SELF_NAME_CHANGED.formatted(name));
-                    gameServer.broadcast(name, Messages.NAME_CHANGED.formatted(oldName, name));
+                    gameServer.broadcast(Messages.NAME_CHANGED.formatted(oldName, name));
                 }
         );
     }

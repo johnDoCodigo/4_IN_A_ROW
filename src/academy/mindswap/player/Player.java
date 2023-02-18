@@ -4,14 +4,13 @@ import java.io.*;
 import java.net.Socket;
 
 
-//dev_branchJ
 
 public class Player {
 
     public static void main(String[] args) {
         Player player = new Player();
         try {
-            player.start("localhost", 8082);
+            player.start("localhost", 8085);
         } catch (IOException e) {
             System.out.println("Connection closed...");
         }

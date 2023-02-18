@@ -8,7 +8,7 @@ public class QuitHandler implements CommandHandler {
     @Override
     public void execute(GameServer gameServer, GameServer.playerConnectionHandler playerConnectionHandler) {
         gameServer.removePlayer(playerConnectionHandler);
-        gameServer.broadcast(playerConnectionHandler.getName(), playerConnectionHandler.getName() + Messages.PLAYER_DISCONNECTED);
+       // gameServer.broadcast(playerConnectionHandler.getName(), playerConnectionHandler.getName() + Messages.PLAYER_DISCONNECTED);
         playerConnectionHandler.close();
     }
 }

@@ -7,6 +7,6 @@ public class ShoutHandler implements CommandHandler {
     public void execute(GameServer gameServer, GameServer.playerConnectionHandler playerConnectionHandler) {
         String message = playerConnectionHandler.getPlayerChoiceInput();
         String messageToSend = message.substring(6);
-        gameServer.broadcast(playerConnectionHandler.getName(), messageToSend.toUpperCase());
+      //  gameServer.broadcast(playerConnectionHandler.getName(), messageToSend.toUpperCase());
     }
 }

@@ -22,7 +22,6 @@ public class GameServer {
     private int maxNumberOfPlayers = 0;
     private final List<playerConnectionHandler> playersWaitingQueue;
 
-
     public GameServer() {
         players = new CopyOnWriteArrayList<>();
         playersWaitingQueue = new CopyOnWriteArrayList<>();
@@ -32,19 +31,20 @@ public class GameServer {
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         service = Executors.newCachedThreadPool();
-        numberOfConnections = 1;
-        System.out.printf(Messages.SERVER_STARTED, port + "\n");
+        numberOfConnections = 10;
 
-        while (maxNumberOfPlayers < 2) {
+       // System.out.printf(Messages.SERVER_STARTED, port + "\n");
+
+        while (serverSocket.isBound()) {
             acceptConnection(numberOfConnections); //Blocking method
             ++numberOfConnections;
             maxNumberOfPlayers++;
         }
-        while (maxNumberOfPlayers >= 2) {
+        /*while (maxNumberOfPlayers >= 2) {
             acceptConnection(numberOfConnections); //Blocking method
             ++numberOfConnections;
             maxNumberOfPlayers++;
-        }
+        }*/
 
     }
 
@@ -75,7 +75,8 @@ public class GameServer {
         System.out.println(playerConnectionHandler.getName());
 
         playerConnectionHandler.send(Messages.COMMANDS_LIST);
-        broadcast(playerConnectionHandler.getName(), Messages.PLAYER_ENTERED_GAME);
+        broadcast(Messages.PLAYER_ENTERED_GAME);
+        //broadcast(playerConnectionHandler.getName(), Messages.PLAYER_ENTERED_GAME);
     }
 
     private void addPlayerToWaitingQueue(playerConnectionHandler playerConnectionHandler) throws IOException {
@@ -94,15 +95,15 @@ public class GameServer {
          */
     }
 
-    public void broadcast(String name, String message) {
-        players.stream()
-                .filter(handler -> !handler.getName().equals(name))
-                .forEach(handler -> handler.send(name + ": " + message));
-    }
-
-    public void broadcastToPlayer(String message) {
+    public synchronized void broadcast(String message) {
         players.stream()
                 .forEach(handler -> handler.send(message));
+    }
+
+    public synchronized void broadcast(String message, playerConnectionHandler doNotBroadcast){
+        players.stream()
+            .filter(p -> !p.equals(doNotBroadcast))
+            .forEach(player -> player.send(message));
     }
 
 
@@ -136,6 +137,7 @@ public class GameServer {
             this.name = name;
             this.out = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream()));
             this.playerTurn = getNumberOfConnections();
+
             if (playerTurn == 2) {
                 this.playerPieceLetter = "R";
             }
@@ -162,8 +164,10 @@ public class GameServer {
                 while (in.hasNext()) {
                     System.out.println(getName() + "1");
                     System.out.println("player turn: " + playerTurn + playerPieceLetter);
-                    if ((connectFour.getNumberOfPlays() % 2 == 0 && (playerTurn % 2 == 0))) {
-                        broadcastToPlayer(Messages.WAIT_TURN);
+                    synchronized (this) {
+                        if ((connectFour.getNumberOfPlays() % 2 == 0)) {
+                            broadcast(String.format(Messages.WAIT_TURN, name));
+                        }
                     }
 
                     System.out.println(getName() + "2");
@@ -187,34 +191,39 @@ public class GameServer {
 
                     //Check for invalid input
                     while (playerChoiceInputInt < 0 || playerChoiceInputInt > 6) {
-                        broadcastToPlayer(Messages.INVALID_COLUMN);
+                        broadcast(String.format(Messages.INVALID_COLUMN, name));
                         playerChoiceInputInt = in.nextInt();
                     }
 
                     System.out.println(getName() + "5");
+
                     //Places players choices
                     connectFour.placePiece(Integer.parseInt(playerChoiceInput));
                     System.out.println(getName() + "5.1");
 
-                    broadcastToPlayer(connectFour.getPrettyBoard());
+                    broadcast(String.format(connectFour.getPrettyBoard()));
                     System.out.println(connectFour.getPrettyBoard());
 
                     System.out.println(getName() + "6");
+
+
                     //Check for winner
                     if (connectFour.checkWinner(playerPieceLetter)) {
                         connectFour.gameOver(getName()); // gives sound - to check
                         if (playerTurn == 2) {
-                            broadcast(getName(),Messages.PLAYER1_WIN);
+                            broadcast(Messages.PLAYER1_WIN);
                         } else {
-                            broadcast(getName(),Messages.PLAYER2_WIN);
+                            broadcast(Messages.PLAYER2_WIN);
                         }
                     }
 
                     System.out.println(getName() + "7");
                     //Check for draw
                     if (connectFour.checkDraw()) {
-                        broadcastToPlayer(Messages.CHECK_DRAW);
-                        broadcastToPlayer(Messages.PLAY_AGAIN);
+                        broadcast(String.format(Messages.CHECK_DRAW));
+                        broadcast(String.format(Messages.PLAY_AGAIN, name));
+                       // broadcastToPlayer(Messages.CHECK_DRAW);
+                        //broadcastToPlayer(Messages.PLAY_AGAIN);
                     }
 
                     System.out.println(getName() + "8");

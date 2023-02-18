@@ -1,5 +1,9 @@
 package academy.mindswap.server.messages;
 
+/**
+ * Message to sent by the GameSever to the console.
+ */
+
 public class Messages {
     public static final String SERVER_STARTED = "Server started on port: %s";
     public static final String DEFAULT_NAME = "PLAYER -";
