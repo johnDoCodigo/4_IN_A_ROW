@@ -4,7 +4,12 @@ public class Messages {
     public static final String SERVER_STARTED = "Server started on port: %s";
     public static final String DEFAULT_NAME = "PLAYER -";
     public static final String PLAYER_ENTERED_GAME = " entered the game.";
+    public static final String PLAYER_JOINED = "Player %s joined the game!\n";
+    public static final String WAITING_FOR_OTHER_PLAYERS = "Waiting for other players to join the game...";
+
     public static final String NO_SUCH_COMMAND = "⚠️ Invalid command!";
+    public static final String ASK_NAME = "What's your name?";
+
     public static final String COMMANDS_LIST = """
             List of available commands:
             /playagain -> starts a new game
@@ -45,4 +50,7 @@ public class Messages {
             "██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║    ███████╗    ╚███╔███╔╝██║██║ ╚████║███████║██╗\n" +
             "╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝    ╚══════╝     ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝\n" +
             "                                                                                                   ";
+
+    public static final String NEW_GAME = "A NEW GAME WAS CREATED";
+
 }

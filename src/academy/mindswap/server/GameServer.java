@@ -1,6 +1,7 @@
 package academy.mindswap.server;
 
-import academy.mindswap.game.ConnectFour;
+import academy.mindswap.game.ConnectFourBoard;
+import academy.mindswap.game.ConnectFourHandler;
 import academy.mindswap.server.commands.Command;
 import academy.mindswap.server.messages.Messages;
 
@@ -12,48 +13,75 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 
 public class GameServer {
     private ServerSocket serverSocket;
-    private ExecutorService service;
-    private final List<playerConnectionHandler> players;
-    private ConnectFour connectFour;
+    private ExecutorService gameService;
+    private ExecutorService playerService;
+    private final List<PlayerConnectionHandler> playerList;
+    private final List<ConnectFourHandler> gameList;
+    private ConnectFourBoard connectFourBoard;
+    private int maxPlayersPerGame = 2;
     private int numberOfConnections;
-    private int maxNumberOfPlayers = 0;
-    private final List<playerConnectionHandler> playersWaitingQueue;
 
+    //TODO FEATURE private final List<playerConnectionHandler> playersWaitingQueue;
 
     public GameServer() {
-        players = new CopyOnWriteArrayList<>();
-        playersWaitingQueue = new CopyOnWriteArrayList<>();
-        connectFour = new ConnectFour();
+        gameList = new CopyOnWriteArrayList<>();
+        playerList = new CopyOnWriteArrayList<>();
     }
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
-        service = Executors.newCachedThreadPool();
-        numberOfConnections = 1;
         System.out.printf(Messages.SERVER_STARTED, port + "\n");
 
-        while (maxNumberOfPlayers < 2) {
-            acceptConnection(numberOfConnections); //Blocking method
-            ++numberOfConnections;
-            maxNumberOfPlayers++;
-        }
-        while (maxNumberOfPlayers >= 2) {
-            acceptConnection(numberOfConnections); //Blocking method
-            ++numberOfConnections;
-            maxNumberOfPlayers++;
-        }
+        gameService = Executors.newCachedThreadPool();
+        playerService = Executors.newCachedThreadPool();
 
+        numberOfConnections = 0;
+
+        while (serverSocket.isBound()) {
+
+            while (!isMaxPlayerReached()) {
+                acceptConnection(numberOfConnections);
+            }
+
+            if (isMaxPlayerReached()) {
+                createGame();
+                broadcastToAll(Messages.NEW_GAME);
+            }
+            try { //Give some time to start another game or an error will occur
+                Thread.sleep(40);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
+
+        }
+    }
+
+    private synchronized boolean isMaxPlayerReached() {
+        if (playerList.size() == maxPlayersPerGame) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void acceptConnection(int numberOfConnections) throws IOException {
         Socket playerSocket = serverSocket.accept(); //Blocking method
-        playerConnectionHandler playerConnectionHandler =
-                new playerConnectionHandler(playerSocket,
-                        Messages.DEFAULT_NAME + numberOfConnections);
-        service.submit(playerConnectionHandler);
+
+        PlayerConnectionHandler playerConnectionHandler = new PlayerConnectionHandler(playerSocket, Messages.DEFAULT_NAME + numberOfConnections);
+        playerService.submit(playerConnectionHandler);
+        playerList.add(playerConnectionHandler);
+
+        System.out.println(Messages.PLAYER_ENTERED_GAME);
+    }
+
+    private void createGame() throws RejectedExecutionException {
+        ConnectFourHandler game = new ConnectFourHandler(playerList.get(0), playerList.get(1));
+        gameList.add(game);
+        gameService.execute(game);
     }
 
     private String getPlayerNameInput(Socket playerSocket) throws IOException {
@@ -65,25 +93,31 @@ public class GameServer {
         return consoleInput.readLine(); //returns the client username
     }
 
-    private void addPlayer(playerConnectionHandler playerConnectionHandler) throws IOException {
-        players.add(playerConnectionHandler);
+    private void welcomePlayerAndChangeName(PlayerConnectionHandler playerConnectionHandler) throws IOException {
+        //Welcomes the player
         playerConnectionHandler.send(Messages.WELCOME.formatted(playerConnectionHandler.getName()));
 
-        //To refactor
-        String newName = getPlayerNameInput(playerConnectionHandler.playerSocket);
-        playerConnectionHandler.setName(newName);
-        System.out.println(playerConnectionHandler.getName());
+        //Asks for name and checks for valid input
+        playerConnectionHandler.send(Messages.ASK_NAME);
+        playerConnectionHandler.name = playerConnectionHandler.getAnswer();
+        while (!playerConnectionHandler.name.matches("[a-zA-Z]+")) {
+            playerConnectionHandler.send(Messages.ASK_NAME);
+            playerConnectionHandler.name = playerConnectionHandler.getAnswer();
+        }
 
+        //Broadcasts the player who joined and presents the command list
+        broadcastToAll(String.format(Messages.PLAYER_JOINED, playerConnectionHandler.name));
         playerConnectionHandler.send(Messages.COMMANDS_LIST);
-        broadcast(playerConnectionHandler.getName(), Messages.PLAYER_ENTERED_GAME);
+        playerConnectionHandler.send(Messages.WAITING_FOR_OTHER_PLAYERS);
     }
 
+
+    /* //TODO FEATURE AND REFACTOR
     private void addPlayerToWaitingQueue(playerConnectionHandler playerConnectionHandler) throws IOException {
         playersWaitingQueue.add(playerConnectionHandler);
         playerConnectionHandler.send(Messages.WAITING_QUEUE.formatted(playerConnectionHandler.getName()));
 
-        //TODO FEATURE AND REFACTOR
-        /*
+
         //To refactor
         String newName = getPlayerNameInput(playerConnectionHandler.playerSocket);
         playerConnectionHandler.setName(newName);
@@ -91,50 +125,71 @@ public class GameServer {
 
         playerConnectionHandler.send(Messages.COMMANDS_LIST);
         broadcast(playerConnectionHandler.getName(), Messages.PLAYER_ENTERED_GAME);
-         */
-    }
 
+    }
+    */
+
+    //TODO: to refactor
     public void broadcast(String name, String message) {
-        players.stream()
+        playerList.stream()
                 .filter(handler -> !handler.getName().equals(name))
                 .forEach(handler -> handler.send(name + ": " + message));
     }
 
+    //TODO: to refactor
     public void broadcastToPlayer(String message) {
-        players.stream()
+        playerList.stream()
                 .forEach(handler -> handler.send(message));
     }
 
+    public synchronized void broadcastToAll(String message) {
+        playerList.stream()
+                .forEach(player -> player.send(message));
+    }
+
+    public synchronized void broadcastToOther(String message, PlayerConnectionHandler doNotBroadcast) {
+        playerList.stream()
+                .filter(p -> !p.equals(doNotBroadcast))
+                .forEach(player -> player.send(message));
+    }
+
+    public synchronized void broadCastToHimself(String message, PlayerConnectionHandler himself) {
+        playerList.stream()
+                .filter(p -> p.equals(himself))
+                .forEach(player -> player.send(message));
+    }
 
     public String listPlayers() {
         StringBuffer buffer = new StringBuffer();
-        players.forEach(client -> buffer.append(client.getName()).append("\n"));
+        playerList.forEach(client -> buffer.append(client.getName()).append("\n"));
         return buffer.toString();
     }
 
-    public void removePlayer(playerConnectionHandler playerConnectionHandler) {
-        players.remove(playerConnectionHandler);
+    public void removePlayer(PlayerConnectionHandler playerConnectionHandler) {
+        playerList.remove(playerConnectionHandler);
 
     }
 
-    public Optional<playerConnectionHandler> getClientByName(String name) {
-        return players.stream()
+    public Optional<PlayerConnectionHandler> getClientByName(String name) {
+        return playerList.stream()
                 .filter(clientConnectionHandler -> clientConnectionHandler.getName().equalsIgnoreCase(name))
                 .findFirst();
     }
 
-    public class playerConnectionHandler implements Runnable {
-        private String name;
+    public class PlayerConnectionHandler implements Runnable {
+        private String name = "";
         private Socket playerSocket;
         private BufferedWriter out;
-        private String playerChoiceInput;
+        private BufferedReader in;
+        private String playerInput;
         private int playerTurn;
         private String playerPieceLetter;
 
-        public playerConnectionHandler(Socket playerSocket, String name) throws IOException {
+        public PlayerConnectionHandler(Socket playerSocket, String name) throws IOException {
             this.playerSocket = playerSocket;
             this.name = name;
             this.out = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream()));
+            this.in = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
             this.playerTurn = getNumberOfConnections();
             if (playerTurn == 2) {
                 this.playerPieceLetter = "R";
@@ -144,11 +199,12 @@ public class GameServer {
             }
         }
 
+        /*
         @Override
         public void run() {
             try {
                 if (maxNumberOfPlayers <= 2) {
-                    addPlayer(this);
+                    welcomePlayerAndChangeName(this);
                 } else {
                     addPlayerToWaitingQueue(this);
                 }
@@ -156,25 +212,24 @@ public class GameServer {
                 throw new RuntimeException(e);
             }
 
-
             try {
                 Scanner in = new Scanner(playerSocket.getInputStream());
                 while (in.hasNext()) {
                     System.out.println(getName() + "1");
-                    System.out.println("player turn: " + playerTurn + playerPieceLetter);
-                    if ((connectFour.getNumberOfPlays() % 2 == 0 && (playerTurn % 2 == 0))) {
+                    System.out.println("player turn: " + playerTurn + " " + playerPieceLetter);
+                    if ((connectFourBoard.getNumberOfPlays() % 2 == 0 && (playerTurn % 2 == 0))) {
                         broadcastToPlayer(Messages.WAIT_TURN);
                     }
 
                     System.out.println(getName() + "2");
-                    System.out.println("player turn: " + playerTurn + playerPieceLetter);
+                    System.out.println("player turn: " + playerTurn + " " + playerPieceLetter);
 
                     //User Input & to Int
                     playerChoiceInput = in.nextLine();
                     int playerChoiceInputInt = Integer.parseInt(playerChoiceInput);
 
                     System.out.println(getName() + "3");
-                    System.out.println("player turn: " + playerTurn + playerPieceLetter);
+                    System.out.println("player turn: " + playerTurn + " " + playerPieceLetter);
 
                     //Check for commands
                     if (isCommand(playerChoiceInput)) {
@@ -183,7 +238,7 @@ public class GameServer {
                     }
 
                     System.out.println(getName() + "4");
-                    System.out.println("player turn: " + playerTurn + playerPieceLetter);
+                    System.out.println("player turn: " + playerTurn + " " + playerPieceLetter);
 
                     //Check for invalid input
                     while (playerChoiceInputInt < 0 || playerChoiceInputInt > 6) {
@@ -193,26 +248,26 @@ public class GameServer {
 
                     System.out.println(getName() + "5");
                     //Places players choices
-                    connectFour.placePiece(Integer.parseInt(playerChoiceInput));
+                    connectFourBoard.placePiece(Integer.parseInt(playerChoiceInput));
                     System.out.println(getName() + "5.1");
 
-                    broadcastToPlayer(connectFour.getPrettyBoard());
-                    System.out.println(connectFour.getPrettyBoard());
+                    broadcastToPlayer(connectFourBoard.getPrettyBoard());
+                    System.out.println(connectFourBoard.getPrettyBoard());
 
                     System.out.println(getName() + "6");
                     //Check for winner
-                    if (connectFour.checkWinner(playerPieceLetter)) {
-                        connectFour.gameOver(getName()); // gives sound - to check
+                    if (connectFourBoard.checkWinner(playerPieceLetter)) {
+                        connectFourBoard.gameOver(getName()); // gives sound - to check
                         if (playerTurn == 2) {
-                            broadcast(getName(),Messages.PLAYER1_WIN);
+                            broadcast(getName(), Messages.PLAYER1_WIN);
                         } else {
-                            broadcast(getName(),Messages.PLAYER2_WIN);
+                            broadcast(getName(), Messages.PLAYER2_WIN);
                         }
                     }
 
                     System.out.println(getName() + "7");
                     //Check for draw
-                    if (connectFour.checkDraw()) {
+                    if (connectFourBoard.checkDraw()) {
                         broadcastToPlayer(Messages.CHECK_DRAW);
                         broadcastToPlayer(Messages.PLAY_AGAIN);
                     }
@@ -226,6 +281,68 @@ public class GameServer {
             } finally {
                 removePlayer(this);
             }
+        }*/
+        @Override
+        public void run() {
+
+            try {
+                welcomePlayerAndChangeName(this);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            //TODO CHOOSE 1 OR 2 OR 3
+            //----------1----------
+            while (!isGameEnded) {
+                if (Thread.interrupted()) {
+                    return;
+                }
+            }
+            //----------2----------
+            while (in.hasNext()) {
+                //User Input & to Int
+                playerChoiceInput = in.nextLine();
+                //Check for commands
+                if (isCommand(playerChoiceInput)) {
+                    try {
+                        dealWithCommand(playerChoiceInput);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            //----------3----------
+            while (!playerSocket.isClosed()) {
+                try {
+                    Scanner in = new Scanner(playerSocket.getInputStream());
+                    playerInput = in.nextLine();
+                    if (isCommand(playerInput)) {
+                        dealWithCommand(message);
+                        break;
+                    }
+                } catch (IOException e) {
+                    System.err.println(Messages.PLAYER_ERROR + e.getMessage());
+                }
+                if (!validInput()) {
+                    askForGuess();
+                }
+
+
+            quit();
+        }
+
+        public String getAnswer() {
+            String message = null;
+            try {
+                message = in.readLine();
+            } catch (IOException | NullPointerException e) {
+                quit();
+            } finally {
+                if (message == null) {
+                    quit();
+                }
+            }
+            return message;
         }
 
         private boolean isCommand(String message) {
@@ -276,13 +393,25 @@ public class GameServer {
         public String getPlayerChoiceInput() {
             return playerChoiceInput;
         }
+
+        public void quit() {
+            hasLeft = true;
+            try {
+                playerSocket.close();
+            } catch (IOException e) {
+                System.out.println("Couldn't closer player socket");
+            } finally {
+                areStillPlayersPlaying();
+                broadcast(String.format(GameMessages.PLAYER_LEFT_GAME, name));
+            }
+        }
     }
 
     public int getNumberOfConnections() {
         return numberOfConnections;
     }
 
-    public ConnectFour getConnectFour() {
-        return connectFour;
+    public ConnectFourBoard getConnectFour() {
+        return connectFourBoard;
     }
 }

@@ -8,7 +8,7 @@ import java.util.Optional;
 public class WhisperHandler implements CommandHandler {
 
     @Override
-    public void execute(GameServer gameServer, GameServer.playerConnectionHandler playerConnectionHandler) {
+    public void execute(GameServer gameServer, GameServer.PlayerConnectionHandler playerConnectionHandler) {
         String message = playerConnectionHandler.getPlayerChoiceInput();
 
         if (message.split(" ").length < 3) {
@@ -16,7 +16,7 @@ public class WhisperHandler implements CommandHandler {
             return;
         }
 
-        Optional<GameServer.playerConnectionHandler> receiverClient = gameServer.getClientByName(message.split(" ")[1]);
+        Optional<GameServer.PlayerConnectionHandler> receiverClient = gameServer.getClientByName(message.split(" ")[1]);
 
         if (receiverClient.isEmpty()) {
             playerConnectionHandler.send(Messages.NO_SUCH_PLAYER);

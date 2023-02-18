@@ -5,7 +5,7 @@ import academy.mindswap.server.GameServer;
 public class ListHandler implements CommandHandler {
 
     @Override
-    public void execute(GameServer gameServer, GameServer.playerConnectionHandler playerConnectionHandler) {
+    public void execute(GameServer gameServer, GameServer.PlayerConnectionHandler playerConnectionHandler) {
        playerConnectionHandler.send(gameServer.listPlayers());
     }
 }
