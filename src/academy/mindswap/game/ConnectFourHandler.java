@@ -54,8 +54,8 @@ public class ConnectFourHandler implements Runnable {
             if (isGameStarted && !isGameEnded) {
                 //Broadcasts current player turn
                 lockNotYourTurnInput.lock();
-                currentPlayer.send(currentPlayer.getName() + ", it's your turn!");
-                notPlayingPlayer.send(notPlayingPlayer.getName() + ", you must wait for your turn.");
+                currentPlayer.send(currentPlayer.getName() + Messages.YOUR_TURN);
+                notPlayingPlayer.send(notPlayingPlayer.getName() + Messages.MUST_WAIT);
                 lockNotYourTurnInput.unlock();
 
                 //Get player turn input and checks from valid input
@@ -115,7 +115,7 @@ public class ConnectFourHandler implements Runnable {
     private boolean checkWinnerAndBroadcast(GameServer.PlayerConnectionHandler currentPlayer, Sound sound) {
         if (board.checkWinner(getMove())) {
             sound.getSoundClip(SoundFiles.GAME_OVER.getPath());
-            broadcast(currentPlayer.getName() + " IS THE WINNER!!");
+            broadcast(currentPlayer.getName() + Messages.WINNER);
             broadcast(board.getPrettyBoard());
             if (currentPlayer == player1) {
                 broadcast(Messages.PLAYER1_WIN);
@@ -138,7 +138,7 @@ public class ConnectFourHandler implements Runnable {
 
     private boolean broadCastIfWinner(GameServer.PlayerConnectionHandler currentPlayer) {
         if (board.checkWinner(getMove())) {
-            broadcast(currentPlayer.getName() + " HAS WON THE GAME!");
+            broadcast(currentPlayer.getName() + Messages.HAS_WON);
             broadcast(board.getPrettyBoard());
             if (currentPlayer == player1) {
                 broadcast(Messages.PLAYER1_WIN);
@@ -152,7 +152,7 @@ public class ConnectFourHandler implements Runnable {
 
     private Integer getAnswerAndValidation(GameServer.PlayerConnectionHandler currentPlayer, Integer playerMove) {
         while (playerMove == null || board.checkFullColumn(playerMove)) {
-            currentPlayer.send("Enter a number between 0 and 6:");
+            currentPlayer.send(Messages.NUMBER_1TO6);
             String input = null;
             try {
                 input = currentPlayer.in.readLine();
@@ -168,7 +168,7 @@ public class ConnectFourHandler implements Runnable {
                 }
 
             } else {
-                currentPlayer.send("Invalid input.");
+                currentPlayer.send(Messages.INVALID_INPUT);
             }
         }
         return playerMove;
@@ -176,12 +176,10 @@ public class ConnectFourHandler implements Runnable {
 
     private void animatedStart() throws InterruptedException {
         Thread.sleep(1500);
-        broadcast("GAME STARTS IN: " + 3);
-        Thread.sleep(1500);
-        broadcast("GAME STARTS IN: " + 2);
-        Thread.sleep(1500);
-        broadcast("GAME STARTS IN: " + 1);
-        Thread.sleep(1500);
+        for (int i = 3; i > 0; i--) {
+            broadcast(Messages.GAME_STARTS_IN + i);
+            Thread.sleep(1500);
+        }
         broadcast(Messages.START_GAME);
         Thread.sleep(3000);
     }

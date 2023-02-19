@@ -60,4 +60,12 @@ public class Messages {
             "╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝    ╚══════╝     ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝\n" +
             "                                                                                                   ";
     public static final String START_GAME = "\n"+ "-".repeat(20) + "LOADING" + "-".repeat(20) + "\n";
+    public static final String SERVER_ERROR = "Something went wrong with the server. Connection closing...";
+    public static final String YOUR_TURN = ", it's your turn!";
+    public static final String MUST_WAIT = ", you must wait for your turn.";
+    public static final String WINNER = " IS THE WINNER!!";
+    public static final String HAS_WON = " HAS WON THE GAME!";
+    public static final String NUMBER_1TO6 = "Enter a number between 0 and 6:";
+    public static final String INVALID_INPUT = "Invalid input.";
+    public static final String GAME_STARTS_IN = "GAME STARTS IN: ";
 }
