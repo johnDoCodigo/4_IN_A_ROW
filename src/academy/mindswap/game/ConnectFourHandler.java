@@ -105,7 +105,7 @@ public class ConnectFourHandler implements Runnable {
                 //Checks for winner
                 if (board.checkWinner(getMove())) {
                     sound.getSoundClip(SoundFiles.GAME_OVER.getPath());
-                    broadcast(currentPlayer.getName() + " HAS WON THE GAME!");
+                    broadcast(currentPlayer.getName() + " IS THE WINNER!!");
                     broadcast(board.getPrettyBoard());
                     if (currentPlayer == player1) {
                         broadcast(Messages.PLAYER1_WIN);
