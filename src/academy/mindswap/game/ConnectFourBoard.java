@@ -10,116 +10,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ConnectFourBoard {
-
-    /*
-        public static void main(String[] args) {
-
-                ConnectFour game1 = new ConnectFour();
-
-
-                //FILL BOARD WITH O's
-                for (int i = 0; i < 7; i++) {
-                    for (int j = 0; j < 6; j++) {
-                        game1.board[i][j] = "⬤";
-                    }
-                }
-
-                game1.updatePrettyBoard();
-                System.out.println(game1.prettyBoard);
-
-                //VERIFICATIONS
-
-                //CHECK FOR HORIZONTAL WIN
-                System.out.println("-".repeat(20) + "CHECK FOR HORIZONTAL WIN"+"-".repeat(20));
-
-                for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
-                    for (int j = 0; j < 6; j++) {
-                        game1.board[i][j] = "⬤";
-                    }
-                }
-                //WINNER COMBO
-                game1.board[2][3] = "@";
-                game1.board[3][3] = "@";
-                game1.board[4][3] = "@";
-                game1.board[5][3] = "@";
-
-                //OTHER INSERTS
-                game1.board[0][0] = "R";
-                game1.board[1][0] = "Y";
-                game1.board[2][0] = "R";
-                game1.board[3][0] = "Y";
-
-                game1.checkWinner("@");
-                System.out.println(game1.updatePrettyBoard());
-                System.out.println("Game winner? " + game1.checkWinner("@"));
-
-                //CHECK FOR VERTICAL WIN
-                System.out.println("-".repeat(20) + "CHECK FOR VERTICAL WIN"+"-".repeat(20));
-                for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
-                    for (int j = 0; j < 6; j++) {
-                        game1.board[i][j] = "⬤";
-                    }
-                }
-                //WINNER COMBO
-                game1.board[3][2] = "@";
-                game1.board[3][3] = "@";
-                game1.board[3][4] = "@";
-                game1.board[3][5] = "@";
-                //OTHER INSERTS
-                game1.board[0][0] = "R";
-                game1.board[1][0] = "Y";
-                game1.board[2][0] = "R";
-                game1.board[3][0] = "Y";
-
-                System.out.println("Game winner? " + game1.checkWinner("@"));
-                System.out.println(game1.updatePrettyBoard());
-
-
-
-                //CHECK FOR SLASH WIN /
-                System.out.println("-".repeat(20) + "CHECK FOR SLASH WIN /"+"-".repeat(20));
-                for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
-                    for (int j = 0; j < 6; j++) {
-                        game1.board[i][j] = "⬤";
-                    }
-                }
-                //WINNER COMBO
-                game1.board[1][2] = "@";
-                game1.board[2][3] = "@";
-                game1.board[3][4] = "@";
-                game1.board[4][5] = "@";
-                //OTHER INSERTS
-                game1.board[0][0] = "R";
-                game1.board[1][0] = "Y";
-                game1.board[2][0] = "R";
-                game1.board[3][0] = "Y";
-
-                System.out.println("Game winner? " + game1.checkWinner("@"));
-                System.out.println(game1.updatePrettyBoard());
-
-                //CHECK FOR BACKSLASH WIN \
-                System.out.println("-".repeat(20) + "CHECK FOR BACKSLASH WIN "+"-".repeat(20));
-                for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
-                    for (int j = 0; j < 6; j++) {
-                        game1.board[i][j] = "⬤";
-                    }
-                }
-                //WINNER COMBO
-                game1.board[5][2] = "@";
-                game1.board[4][3] = "@";
-                game1.board[3][4] = "@";
-                game1.board[2][5] = "@";
-                //OTHER INSERTS
-                game1.board[0][0] = "R";
-                game1.board[1][0] = "Y";
-                game1.board[2][0] = "R";
-                game1.board[3][0] = "Y";
-
-                System.out.println("Game winner? " + game1.checkWinner("@"));
-                System.out.println(game1.updatePrettyBoard());
-
-            }
-     */
     private String[][] board;
     private String prettyBoard;
     private int numberOfPlays;
@@ -129,7 +19,6 @@ public class ConnectFourBoard {
         fillEmptyBoard();
         updatePrettyBoard();
         this.numberOfPlays = 0;
-
     }
 
     public void fillEmptyBoard() {
@@ -179,7 +68,6 @@ public class ConnectFourBoard {
                 CharactersAndColors.BLUE_BACKGROUND + "|----+----+----+----+----+----+----+" + CharactersAndColors.RESET + "\n" +
                 CharactersAndColors.BLUE_BACKGROUND + "|" + CharactersAndColors.RESET + "  0    1    2    3    4    5    6 " + CharactersAndColors.BLUE_BACKGROUND + "|" + CharactersAndColors.RESET;
 
-        //prettyBoard = prettyBoard.replace("O","⬤");
         prettyBoard = prettyBoard.replace("W", CharactersAndColors.CIRCLE_GREEN + CharactersAndColors.BLUE_BACKGROUND);
         prettyBoard = prettyBoard.replace("R", CharactersAndColors.CIRCLE_RED + CharactersAndColors.BLUE_BACKGROUND);
         prettyBoard = prettyBoard.replace("Y", CharactersAndColors.CIRCLE_YELLOW + CharactersAndColors.BLUE_BACKGROUND);

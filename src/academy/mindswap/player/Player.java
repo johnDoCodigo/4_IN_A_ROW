@@ -15,7 +15,6 @@ public class Player {
         } catch (IOException e) {
             System.out.println("Connection closed...");
         }
-
     }
 
     private void start(String host, int port) throws IOException {
@@ -44,7 +43,6 @@ public class Player {
 
         @Override
         public void run() {
-
             while (!socket.isClosed()) {
                 try {
                     String line = in.readLine();
