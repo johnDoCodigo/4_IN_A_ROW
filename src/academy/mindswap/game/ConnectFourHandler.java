@@ -41,8 +41,8 @@ public class ConnectFourHandler implements Runnable {
         listOfBoardPlayers.add(player2);
     }
 /**
- * Method responsible for starting the game and creates a new ConnectFour whenever a new game is started.
- * This method ensures that the game remains active as long as there is a started Game.
+ * This method is responsible for starting the game and creating a new game when ever it starts, and ensures that the game remains active as long as there's a started Game.
+ * Waits a bit so that players can read the instructions. Broadcasts current player turn. Get player turn input and checks from valid input. Place current player move. Checks for winner. Checks for draw. Broadcasts the board with the new move. Switch move and player.
  */
     @Override
     public void run() {
@@ -50,7 +50,7 @@ public class ConnectFourHandler implements Runnable {
         GameServer.PlayerConnectionHandler notPlayingPlayer = player2;
         ReentrantLock lockNotYourTurnInput = new ReentrantLock();
 
-        //Waits a bit so that players can read the instructions.
+        //
         try {
             animatedStart();
         } catch (InterruptedException e) {
@@ -64,17 +64,16 @@ public class ConnectFourHandler implements Runnable {
             }
 
             if (isGameStarted && !isGameEnded) {
-                //Broadcasts current player turn
+
                 lockNotYourTurnInput.lock();
                 currentPlayer.send(currentPlayer.getName() + ", it's your turn!");
                 notPlayingPlayer.send(notPlayingPlayer.getName() + ", you must wait for your turn.");
                 lockNotYourTurnInput.unlock();
 
-                //Get player turn input and checks from valid input
+
                 Integer playerMove = null;
                 playerMove = getAnswerAndValidation(currentPlayer, playerMove);
 
-                //Place current player move
                 Sound sound = new Sound();
                 board.placePiece(getMove(), playerMove);
                 if (currentPlayer == player1) {
@@ -83,16 +82,12 @@ public class ConnectFourHandler implements Runnable {
                     sound.getSoundClip(SoundFiles.PLAYER2_PIECE.getPath());
                 }
 
-                //Checks for winner
                 if (checkWinnerAndBroadcast(currentPlayer, sound)) break;
 
-                //Checks for draw
                 if (checkDrawAndBroadcast()) break;
 
-                //Broadcasts the board with the new move
                 broadcast(board.getPrettyBoard());
 
-                //Switch move and player.
                 switchMove();
                 currentPlayer = (currentPlayer == player1) ? player2 : player1;
                 notPlayingPlayer = (notPlayingPlayer == player2) ? player1 : player2;
@@ -237,7 +232,6 @@ public class ConnectFourHandler implements Runnable {
         isGameStarted = true;
         broadcast(board.getPrettyBoard());
     }
-
 
     /**
      * This public synchronized void method sends the players inputs.
