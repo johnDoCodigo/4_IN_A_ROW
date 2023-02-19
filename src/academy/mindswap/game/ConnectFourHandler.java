@@ -35,6 +35,8 @@ public class ConnectFourHandler implements Runnable {
     @Override
     public void run() {
         GameServer.PlayerConnectionHandler currentPlayer = player1;
+        GameServer.PlayerConnectionHandler notPlayingPlayer = player2;
+
         ReentrantLock lockNotYourTurnInput = new ReentrantLock();
 
         //Waits a bit so that players can read the instructions.
@@ -53,9 +55,8 @@ public class ConnectFourHandler implements Runnable {
                 //Broadcasts current player turn
                 lockNotYourTurnInput.lock();
                 currentPlayer.send(currentPlayer.getName() + ", it's your turn!");
+                notPlayingPlayer.send(notPlayingPlayer.getName() + ", you must wait for your turn.");
                 lockNotYourTurnInput.unlock();
-
-                broadcast("Teste");
 
                 //Get player turn input and checks from valid input
                 Integer playerMove = null;
@@ -83,6 +84,8 @@ public class ConnectFourHandler implements Runnable {
 
                 //Checks for winner
                 if (board.checkWinner(getMove())) {
+                    broadcast(currentPlayer.getName() + " HAS WON THE GAME!");
+                    broadcast(board.getPrettyBoard());
                     if (currentPlayer == player1) {
                         broadcast(Messages.PLAYER1_WIN);
                     } else {
@@ -93,6 +96,7 @@ public class ConnectFourHandler implements Runnable {
 
                 //Checks for draw
                 if (board.checkDraw()) {
+                    broadcast(board.getPrettyBoard());
                     broadcast(Messages.CHECK_DRAW);
                     break;
                 }
@@ -103,6 +107,7 @@ public class ConnectFourHandler implements Runnable {
                 //Switch move and player.
                 switchMove();
                 currentPlayer = (currentPlayer == player1) ? player2 : player1;
+                notPlayingPlayer = (notPlayingPlayer == player2) ? player1 : player2;
             }
         }
         //TODO: Clean up or playagain
