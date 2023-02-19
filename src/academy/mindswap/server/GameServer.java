@@ -93,25 +93,10 @@ public class GameServer {
         playerConnectionHandler.send(Messages.ASK_NAME);
         playerConnectionHandler.name = playerConnectionHandler.getAnswer();
 
-        /*
-        while (!playerConnectionHandler.name.matches("[a-zA-Z]+")) {
-            playerConnectionHandler.send(Messages.ASK_NAME);
-            playerConnectionHandler.name = playerConnectionHandler.getAnswer();
-        }
-
-         */
-
         if (playerList.size() < maxPlayersPerGame) {
             playerConnectionHandler.send(Messages.WAITING_FOR_OTHER_PLAYERS.formatted(maxPlayersPerGame - playerList.size()));
             this.wait();
         } else this.notifyAll();
-
-        /*
-        //Broadcasts the player who joined and presents the command list
-        broadcastToAll(String.format(Messages.PLAYER_JOINED, playerConnectionHandler.name));
-        playerConnectionHandler.send(Messages.COMMANDS_LIST);
-        playerConnectionHandler.send(Messages.WAITING_FOR_OTHER_PLAYERS);
-         */
 
     }
 
@@ -121,17 +106,6 @@ public class GameServer {
         gameList.add(game);
         gameService.execute(game);
     }
-
-    private String getPlayerNameInput(Socket playerSocket) throws IOException {
-        BufferedReader consoleInput = new BufferedReader(new InputStreamReader(playerSocket.getInputStream())); //reads input from the input stream of the clientSocket object, which represents the client's connection to the server.
-        BufferedWriter outputName = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream())); //writes output to the output stream of the clientSocket object, which represents the client's connection to the server.
-        outputName.write("Please insert your username"); //writes the message "Please insert your username" to the client through the output stream
-        outputName.newLine(); //Add a newline character to the output stream
-        outputName.flush(); //flush the buffer. This ensures that the message is sent to the client immediately.
-        return consoleInput.readLine(); //returns the client username
-    }
-
-
 
     /* //TODO FEATURE AND REFACTOR
     private void addPlayerToWaitingQueue(playerConnectionHandler playerConnectionHandler) throws IOException {
@@ -157,32 +131,10 @@ public class GameServer {
                 .forEach(handler -> handler.send(name + ": " + message));
     }
 
-    public synchronized void broadcastToAll(String message) {
-        playerList.stream()
-                .forEach(player -> player.send(message));
-    }
-
-    public synchronized void broadcastToOther(String message, PlayerConnectionHandler doNotBroadcast) {
-        playerList.stream()
-                .filter(p -> !p.equals(doNotBroadcast))
-                .forEach(player -> player.send(message));
-    }
-
-    public synchronized void broadCastToHimself(String message, PlayerConnectionHandler himself) {
-        playerList.stream()
-                .filter(p -> p.equals(himself))
-                .forEach(player -> player.send(message));
-    }
 
     public void removePlayer(PlayerConnectionHandler playerConnectionHandler) {
         playerList.remove(playerConnectionHandler);
 
-    }
-
-    public Optional<PlayerConnectionHandler> getClientByName(String name) {
-        return playerList.stream()
-                .filter(clientConnectionHandler -> clientConnectionHandler.getName().equalsIgnoreCase(name))
-                .findFirst();
     }
 
     public class PlayerConnectionHandler implements Runnable {
@@ -234,11 +186,12 @@ public class GameServer {
         }
 
 
+
         private boolean isCommand(String message) {
             return message.startsWith("/");
         }
 
-        private void dealWithCommand(String message) throws IOException {
+        public void dealWithCommand(String message) throws IOException {
             String description = message.split(" ")[0];
             Command command = Command.getCommandFromDescription(description);
 
@@ -290,30 +243,8 @@ public class GameServer {
                 playerSocket.close();
             } catch (IOException e) {
                 System.out.println("Couldn't closer player socket");
-            } finally {
-                //areStillPlayersPlaying();
-                //broadcastToAll(String.format(Messages.PLAYER_LEFT_GAME, name));
             }
         }
     }
-
-    /*
-    public void areStillPlayersPlaying() {
-        if (listOfPlayers.stream()
-                .filter(p -> p.hasLeft).count() == MAX_NUM_OF_PLAYERS) {
-            endGame();
-        }
-    }
-     */
-
-
-    public int getNumberOfConnections() {
-        return numberOfConnections;
-    }
-
-    public ConnectFourBoard getConnectFour() {
-        return connectFourBoard;
-    }
-
 
 }
