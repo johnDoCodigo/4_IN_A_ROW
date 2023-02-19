@@ -189,21 +189,17 @@ public class GameServer {
         ConnectFourHandler connectFourHandler;
         private String name;
         private Socket playerSocket;
-        private BufferedWriter out;
+        public BufferedWriter out;
+        public BufferedReader in;
         private int playerInput;
         private boolean hasLeft;
-
-        BufferedReader in;
 
         public PlayerConnectionHandler(Socket playerSocket, String name) throws IOException {
             this.playerSocket = playerSocket;
             this.name = name;
             this.out = new BufferedWriter(new OutputStreamWriter(playerSocket.getOutputStream()));
-            try {
-                in = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
-            } catch (IOException e) {
-                quit();
-            }
+            this.in = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
+
         }
 
         @Override
