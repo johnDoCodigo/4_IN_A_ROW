@@ -1,6 +1,7 @@
 package academy.mindswap.game;
 
 import academy.mindswap.server.GameServer;
+import academy.mindswap.server.commands.Command;
 import academy.mindswap.server.messages.Messages;
 
 import java.io.IOException;
@@ -31,7 +32,6 @@ public class ConnectFourHandler implements Runnable {
         listOfBoardPlayers.add(player2);
     }
 
-
     @Override
     public void run() {
         GameServer.PlayerConnectionHandler currentPlayer = player1;
@@ -41,11 +41,22 @@ public class ConnectFourHandler implements Runnable {
 
         //Waits a bit so that players can read the instructions.
         try {
-            Thread.sleep(500);
+            Thread.sleep(1500);
+            broadcast("GAME STARTS IN: " + 3);
+            Thread.sleep(1500);
+            broadcast("GAME STARTS IN: " + 2);
+            Thread.sleep(1500);
+            broadcast("GAME STARTS IN: " + 1);
+            Thread.sleep(1500);
+            broadcast("-".repeat(20) + "THE GAME IS ABOUT TO START " + "-".repeat(20));
+            Thread.sleep(3000);
+
+
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
+        //GAME  LOGIC
         while (!isGameEnded) {
             if (checkIfGameCanStart() && !isGameStarted) {
                 startGame();
@@ -60,7 +71,7 @@ public class ConnectFourHandler implements Runnable {
 
                 //Get player turn input and checks from valid input
                 Integer playerMove = null;
-                while (playerMove == null) {
+                while (playerMove == null || board.checkFullColumn(playerMove)) {
                     currentPlayer.send("Enter a number between 0 and 6:");
                     String input = null;
                     try {
@@ -68,8 +79,14 @@ public class ConnectFourHandler implements Runnable {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+
                     if (input.matches("[0-6]")) {
                         playerMove = Integer.parseInt(input);
+
+                        if (board.checkFullColumn(playerMove)) {
+                            currentPlayer.send("Column is full. Choose another column");
+                        }
+
                     } else {
                         currentPlayer.send("Invalid input.");
                     }
@@ -106,8 +123,30 @@ public class ConnectFourHandler implements Runnable {
                 notPlayingPlayer = (notPlayingPlayer == player2) ? player1 : player2;
             }
         }
-        //TODO: Clean up or playagain
         broadcast(Messages.PLAY_AGAIN_OR_QUIT);
+        //TODO FEATURE: Play again or quit
+        /*
+        while (true) {
+            String firstPlayer = null;
+            String secondPlayer = null;
+
+            try {
+                firstPlayer = currentPlayer.in.readLine();
+                secondPlayer = currentPlayer.in.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (firstPlayer.equals("/playagain") && secondPlayer.equals("/playagain")) {
+                playAgain();
+                broadcast("A new game is about to start...");
+                startGame();
+                break;
+            } else {
+                break;
+            }
+        }
+         */
     }
 
     public void startGame() {
@@ -139,4 +178,11 @@ public class ConnectFourHandler implements Runnable {
         move = (move == "R") ? "Y" : "R";
     }
 
+    public void playAgain() {
+        board.fillEmptyBoard();
+        board.updatePrettyBoard();
+        board.resetNumberOfPlays();
+        isGameStarted = true;
+        isGameEnded = false;
+    }
 }

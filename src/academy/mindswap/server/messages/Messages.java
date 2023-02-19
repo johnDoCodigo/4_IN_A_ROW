@@ -19,7 +19,7 @@ public class Messages {
             "Red goes first " + CharactersAndColors.CIRCLE_RED+".\n"+
             "Yellow goes next " + CharactersAndColors.CIRCLE_YELLOW+".\n"+
             "Best of luck!\n"+
-            "----------------------------------I---------------------------------------------\n";
+            "--------------------------------------------------------------------------------\n";
 
     public static final String COMMANDS_LIST = """
             List of available commands:
@@ -42,7 +42,14 @@ public class Messages {
     public static final String PLAY_AGAIN_OR_QUIT = "Type /playagain if you would like to play again.\n"+
             "Type /quit to leave.";
     public static final String WAITING_QUEUE = "You have been added to the waiting queue";
-    public static final String CHECK_DRAW = "Game over. It's a draw. If you want do play again please write /playagain.";
+    public static final String CHECK_DRAW =
+            "██╗████████╗███████╗     █████╗     ██████╗ ██████╗  █████╗ ██╗    ██╗██╗\n" +
+            "██║╚══██╔══╝██╔════╝    ██╔══██╗    ██╔══██╗██╔══██╗██╔══██╗██║    ██║██║\n" +
+            "██║   ██║   ███████╗    ███████║    ██║  ██║██████╔╝███████║██║ █╗ ██║██║\n" +
+            "██║   ██║   ╚════██║    ██╔══██║    ██║  ██║██╔══██╗██╔══██║██║███╗██║╚═╝\n" +
+            "██║   ██║   ███████║    ██║  ██║    ██████╔╝██║  ██║██║  ██║╚███╔███╔╝██╗\n" +
+            "╚═╝   ╚═╝   ╚══════╝    ╚═╝  ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚══╝╚══╝ ╚═╝\n" +
+            "Game over, if you want do play again please write /playagain.";
 
     public static final String INVALID_COLUMN = "You must choose a column between 0-6.";
     public static final String WAIT_TURN = "You must wait for your turn.";

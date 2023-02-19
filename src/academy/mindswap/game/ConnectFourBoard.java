@@ -132,7 +132,7 @@ public class ConnectFourBoard {
 
     }
 
-    private void fillEmptyBoard() {
+    public void fillEmptyBoard() {
         for (int x = 0; x < 7; x++) {
             for (int y = 0; y < 6; y++) {
                 this.board[x][y] = "⬤";
@@ -142,9 +142,6 @@ public class ConnectFourBoard {
 
     public void placePiece(String move, int playerChoiceInput) {
         if (!checkWinner(move) && numberOfPlays < 42) {
-            if (playerChoiceInput < 0 || playerChoiceInput > 6) {
-                System.out.println("Please enter a valid column from 0 to 6.");
-            }
             for (int y = 0; y < 6; y++) {
                 if (board[playerChoiceInput][y].equals("⬤")) {
                     if (numberOfPlays % 2 == 0) {
@@ -155,17 +152,22 @@ public class ConnectFourBoard {
                         break;
                     }
                 }
-                if (y == 5) {
-                    System.out.println("This column is full, please choose another one.");
-                    //todo pedir novo input em caso de a coluna estar cheia
-                }
             }
             numberOfPlays++;
             updatePrettyBoard();
         }
     }
 
-    private String updatePrettyBoard() {
+    public boolean checkFullColumn(int playerChoiceInput) {
+        if (board[playerChoiceInput][5].equals("⬤")) {
+            return false;
+        }
+        return true;
+    }
+
+
+
+    public String updatePrettyBoard() {
         prettyBoard = "\n" +
                 CharactersAndColors.BLUE_BACKGROUND + "|----+----+----+----+----+----+----|" + CharactersAndColors.RESET + "\n" +
                 CharactersAndColors.BLUE_BACKGROUND + "| " + board[0][5] + " | " + board[1][5] + " | " + board[2][5] + " | " + board[3][5] + " | " + board[4][5] + " | " + board[5][5] + " | " + board[6][5] + " |" + CharactersAndColors.RESET + "\n" +
@@ -259,25 +261,13 @@ public class ConnectFourBoard {
         } else {
             System.out.println(Messages.PLAYER2_WIN);
         }
-
     }
 
     public String getPrettyBoard() {
         return prettyBoard;
     }
 
-    public String[][] getBoard() {
-        return board;
-    }
-
-    public int getNumberOfPlays() {
-        return numberOfPlays;
-    }
-
-
-    public void playAgain() {
-        fillEmptyBoard();
+    public void resetNumberOfPlays() {
         this.numberOfPlays = 0;
     }
-
 }
