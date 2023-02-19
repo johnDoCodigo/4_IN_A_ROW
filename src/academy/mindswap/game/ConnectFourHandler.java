@@ -1,7 +1,6 @@
 package academy.mindswap.game;
 
 import academy.mindswap.server.GameServer;
-import academy.mindswap.server.commands.Command;
 import academy.mindswap.server.messages.Messages;
 import academy.mindswap.server.sounds.Sound;
 import academy.mindswap.server.sounds.SoundFiles;
@@ -37,22 +36,11 @@ public class ConnectFourHandler implements Runnable {
     public void run() {
         GameServer.PlayerConnectionHandler currentPlayer = player1;
         GameServer.PlayerConnectionHandler notPlayingPlayer = player2;
-
         ReentrantLock lockNotYourTurnInput = new ReentrantLock();
 
         //Waits a bit so that players can read the instructions.
         try {
-            Thread.sleep(1500);
-            broadcast("GAME STARTS IN: " + 3);
-            Thread.sleep(1500);
-            broadcast("GAME STARTS IN: " + 2);
-            Thread.sleep(1500);
-            broadcast("GAME STARTS IN: " + 1);
-            Thread.sleep(1500);
-            broadcast(Messages.START_GAME);
-            Thread.sleep(3000);
-
-
+            animatedStart();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -72,26 +60,7 @@ public class ConnectFourHandler implements Runnable {
 
                 //Get player turn input and checks from valid input
                 Integer playerMove = null;
-                while (playerMove == null || board.checkFullColumn(playerMove)) {
-                    currentPlayer.send("Enter a number between 0 and 6:");
-                    String input = null;
-                    try {
-                        input = currentPlayer.in.readLine();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    if (input.matches("[0-6]")) {
-                        playerMove = Integer.parseInt(input);
-
-                        if (board.checkFullColumn(playerMove)) {
-                            currentPlayer.send(Messages.COLUMN_FULL);
-                        }
-
-                    } else {
-                        currentPlayer.send("Invalid input.");
-                    }
-                }
+                playerMove = getAnswerAndValidation(currentPlayer, playerMove);
 
                 //Place current player move
                 Sound sound = new Sound();
@@ -103,24 +72,10 @@ public class ConnectFourHandler implements Runnable {
                 }
 
                 //Checks for winner
-                if (board.checkWinner(getMove())) {
-                    sound.getSoundClip(SoundFiles.GAME_OVER.getPath());
-                    broadcast(currentPlayer.getName() + " HAS WON THE GAME!");
-                    broadcast(board.getPrettyBoard());
-                    if (currentPlayer == player1) {
-                        broadcast(Messages.PLAYER1_WIN);
-                    } else {
-                        broadcast(Messages.PLAYER2_WIN);
-                    }
-                    break;
-                }
+                if (checkWinnerAndBroadcast(currentPlayer, sound)) break;
 
                 //Checks for draw
-                if (board.checkDraw()) {
-                    broadcast(board.getPrettyBoard());
-                    broadcast(Messages.CHECK_DRAW);
-                    break;
-                }
+                if (checkDrawAndBroadcast()) break;
 
                 //Broadcasts the board with the new move
                 broadcast(board.getPrettyBoard());
@@ -155,6 +110,80 @@ public class ConnectFourHandler implements Runnable {
             }
         }
          */
+    }
+
+    private boolean checkWinnerAndBroadcast(GameServer.PlayerConnectionHandler currentPlayer, Sound sound) {
+        if (board.checkWinner(getMove())) {
+            sound.getSoundClip(SoundFiles.GAME_OVER.getPath());
+            broadcast(currentPlayer.getName() + " IS THE WINNER!!");
+            broadcast(board.getPrettyBoard());
+            if (currentPlayer == player1) {
+                broadcast(Messages.PLAYER1_WIN);
+            } else {
+                broadcast(Messages.PLAYER2_WIN);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkDrawAndBroadcast() {
+        if (board.checkDraw()) {
+            broadcast(board.getPrettyBoard());
+            broadcast(Messages.CHECK_DRAW);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean broadCastIfWinner(GameServer.PlayerConnectionHandler currentPlayer) {
+        if (board.checkWinner(getMove())) {
+            broadcast(currentPlayer.getName() + " HAS WON THE GAME!");
+            broadcast(board.getPrettyBoard());
+            if (currentPlayer == player1) {
+                broadcast(Messages.PLAYER1_WIN);
+            } else {
+                broadcast(Messages.PLAYER2_WIN);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private Integer getAnswerAndValidation(GameServer.PlayerConnectionHandler currentPlayer, Integer playerMove) {
+        while (playerMove == null || board.checkFullColumn(playerMove)) {
+            currentPlayer.send("Enter a number between 0 and 6:");
+            String input = null;
+            try {
+                input = currentPlayer.in.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (input.matches("[0-6]")) {
+                playerMove = Integer.parseInt(input);
+
+                if (board.checkFullColumn(playerMove)) {
+                    currentPlayer.send(Messages.COLUMN_FULL);
+                }
+
+            } else {
+                currentPlayer.send("Invalid input.");
+            }
+        }
+        return playerMove;
+    }
+
+    private void animatedStart() throws InterruptedException {
+        Thread.sleep(1500);
+        broadcast("GAME STARTS IN: " + 3);
+        Thread.sleep(1500);
+        broadcast("GAME STARTS IN: " + 2);
+        Thread.sleep(1500);
+        broadcast("GAME STARTS IN: " + 1);
+        Thread.sleep(1500);
+        broadcast(Messages.START_GAME);
+        Thread.sleep(3000);
     }
 
     //TODO FEATURE: Play again

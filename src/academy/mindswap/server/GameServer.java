@@ -220,7 +220,7 @@ public class GameServer {
             try {
                 playerSocket.close();
             } catch (IOException e) {
-                System.out.println("Couldn't closer player socket");
+                System.out.println("Couldn't close player socket");
             }
         }
     }
