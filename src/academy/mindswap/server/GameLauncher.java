@@ -1,8 +1,5 @@
 package academy.mindswap.server;
 
-import academy.mindswap.game.ConnectFour;
-import com.sun.source.tree.NewArrayTree;
-
 import java.io.IOException;
 
 public class GameLauncher {
@@ -12,7 +9,7 @@ public class GameLauncher {
         GameServer gameServer = new GameServer();
 
         try {
-           gameServer.start(8085);
+           gameServer.start(8083);
         } catch (IOException e) {
             e.printStackTrace();
         }

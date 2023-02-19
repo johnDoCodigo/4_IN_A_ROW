@@ -4,19 +4,19 @@ import academy.mindswap.server.GameServer;
 import academy.mindswap.server.messages.Messages;
 
 import java.util.Optional;
-
+/*
 public class WhisperHandler implements CommandHandler {
 
     @Override
-    public void execute(GameServer gameServer, GameServer.playerConnectionHandler playerConnectionHandler) {
-        String message = playerConnectionHandler.getPlayerChoiceInput();
+    public void execute(GameServer gameServer, GameServer.PlayerConnectionHandler playerConnectionHandler) {
+        String message = playerConnectionHandler.getPlayerInput();
 
         if (message.split(" ").length < 3) {
             playerConnectionHandler.send(Messages.WHISPER_INSTRUCTIONS);
             return;
         }
 
-        Optional<GameServer.playerConnectionHandler> receiverClient = gameServer.getClientByName(message.split(" ")[1]);
+        Optional<GameServer.PlayerConnectionHandler> receiverClient = gameServer.getClientByName(message.split(" ")[1]);
 
         if (receiverClient.isEmpty()) {
             playerConnectionHandler.send(Messages.NO_SUCH_PLAYER);
@@ -27,3 +27,4 @@ public class WhisperHandler implements CommandHandler {
         receiverClient.get().send(playerConnectionHandler.getName() + Messages.WHISPER + ": " + messageToSend);
     }
 }
+*/
