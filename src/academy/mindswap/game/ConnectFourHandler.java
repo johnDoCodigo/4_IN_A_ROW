@@ -1,7 +1,6 @@
 package academy.mindswap.game;
 
 import academy.mindswap.server.GameServer;
-import academy.mindswap.server.commands.Command;
 import academy.mindswap.server.messages.Messages;
 import academy.mindswap.server.sounds.Sound;
 import academy.mindswap.server.sounds.SoundFiles;
@@ -73,20 +72,10 @@ public class ConnectFourHandler implements Runnable {
                 }
 
                 //Checks for winner
-                if (board.checkWinner(getMove())) {
-                    sound.getSoundClip(SoundFiles.GAME_OVER.getPath());
-                    broadcast(currentPlayer.getName() + " IS THE WINNER!!");
-                    broadcast(board.getPrettyBoard());
-                    if (currentPlayer == player1) {
-                        broadcast(Messages.PLAYER1_WIN);
-                    } else {
-                        broadcast(Messages.PLAYER2_WIN);
-                    }
-                    break;
-                }
+                if (checkWinnerAndBroadcast(currentPlayer, sound)) break;
 
                 //Checks for draw
-                if (broadCastIfDraw()) break;
+                if (checkDrawAndBroadcast()) break;
 
                 //Broadcasts the board with the new move
                 broadcast(board.getPrettyBoard());
@@ -123,7 +112,22 @@ public class ConnectFourHandler implements Runnable {
          */
     }
 
-    private boolean broadCastIfDraw() {
+    private boolean checkWinnerAndBroadcast(GameServer.PlayerConnectionHandler currentPlayer, Sound sound) {
+        if (board.checkWinner(getMove())) {
+            sound.getSoundClip(SoundFiles.GAME_OVER.getPath());
+            broadcast(currentPlayer.getName() + " IS THE WINNER!!");
+            broadcast(board.getPrettyBoard());
+            if (currentPlayer == player1) {
+                broadcast(Messages.PLAYER1_WIN);
+            } else {
+                broadcast(Messages.PLAYER2_WIN);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkDrawAndBroadcast() {
         if (board.checkDraw()) {
             broadcast(board.getPrettyBoard());
             broadcast(Messages.CHECK_DRAW);
