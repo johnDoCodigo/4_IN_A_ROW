@@ -59,5 +59,5 @@ public class Messages {
             "██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║    ███████╗    ╚███╔███╔╝██║██║ ╚████║███████║██╗\n" +
             "╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝    ╚══════╝     ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝\n" +
             "                                                                                                   ";
-    public static final String START_GAME = "\n"+ "-".repeat(20) + "LOADING..." + "-".repeat(20) + "\n";
+    public static final String START_GAME = "\n"+ "-".repeat(20) + "LOADING" + "-".repeat(20) + "\n";
 }
