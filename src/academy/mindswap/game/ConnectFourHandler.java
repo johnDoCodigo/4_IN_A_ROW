@@ -3,6 +3,8 @@ package academy.mindswap.game;
 import academy.mindswap.server.GameServer;
 import academy.mindswap.server.commands.Command;
 import academy.mindswap.server.messages.Messages;
+import academy.mindswap.server.sounds.Sound;
+import academy.mindswap.server.sounds.SoundFiles;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -92,10 +94,17 @@ public class ConnectFourHandler implements Runnable {
                 }
 
                 //Place current player move
+                Sound sound = new Sound();
                 board.placePiece(getMove(), playerMove);
+                if (currentPlayer == player1) {
+                    sound.getSoundClip(SoundFiles.PLAYER1_PIECE.getPath());
+                } else {
+                    sound.getSoundClip(SoundFiles.PLAYER2_PIECE.getPath());
+                }
 
                 //Checks for winner
                 if (board.checkWinner(getMove())) {
+                    sound.getSoundClip(SoundFiles.GAME_OVER.getPath());
                     broadcast(currentPlayer.getName() + " HAS WON THE GAME!");
                     broadcast(board.getPrettyBoard());
                     if (currentPlayer == player1) {
