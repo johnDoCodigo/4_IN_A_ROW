@@ -4,7 +4,7 @@ import academy.mindswap.server.GameServer;
 import academy.mindswap.server.messages.Messages;
 
 import java.util.Optional;
-
+/*
 public class WhisperHandler implements CommandHandler {
 
     @Override
@@ -27,3 +27,4 @@ public class WhisperHandler implements CommandHandler {
         receiverClient.get().send(playerConnectionHandler.getName() + Messages.WHISPER + ": " + messageToSend);
     }
 }
+*/

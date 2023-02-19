@@ -128,6 +128,7 @@ public class ConnectFourBoard {
     public ConnectFourBoard() {
         this.board = new String[7][6];
         fillEmptyBoard();
+        updatePrettyBoard();
         this.numberOfPlays = 0;
 
     }
