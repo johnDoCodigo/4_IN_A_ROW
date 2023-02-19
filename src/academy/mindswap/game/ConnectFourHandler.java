@@ -41,7 +41,7 @@ public class ConnectFourHandler implements Runnable {
 
         //Waits a bit so that players can read the instructions.
         try {
-            Thread.sleep(3000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -68,14 +68,10 @@ public class ConnectFourHandler implements Runnable {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    try {
+                    if (input.matches("[0-6]")) {
                         playerMove = Integer.parseInt(input);
-                        if (playerMove < 0 || playerMove > 6) {
-                            currentPlayer.send("Invalid input. Enter a number between 0 and 6:");
-                            playerMove = null;
-                        }
-                    } catch (NumberFormatException e) {
-                        currentPlayer.send("Invalid input. Enter a number between 0 and 6:");
+                    } else {
+                        currentPlayer.send("Invalid input.");
                     }
                 }
 
