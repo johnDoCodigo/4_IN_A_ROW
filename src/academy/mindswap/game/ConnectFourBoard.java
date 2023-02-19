@@ -124,7 +124,6 @@ public class ConnectFourBoard {
     private String prettyBoard;
     private int numberOfPlays;
 
-
     public ConnectFourBoard() {
         this.board = new String[7][6];
         fillEmptyBoard();
@@ -205,6 +204,7 @@ public class ConnectFourBoard {
                     this.board[i][j + 1] = "W";
                     this.board[i][j + 2] = "W";
                     this.board[i][j + 3] = "W";
+                    updatePrettyBoard();
                     return true;
                 }
             }
@@ -217,6 +217,7 @@ public class ConnectFourBoard {
                     this.board[i + 1][j] = "W";
                     this.board[i + 2][j] = "W";
                     this.board[i + 3][j] = "W";
+                    updatePrettyBoard();
                     return true;
                 }
             }
@@ -229,6 +230,7 @@ public class ConnectFourBoard {
                     this.board[i - 1][j + 1] = "W";
                     this.board[i - 2][j + 2] = "W";
                     this.board[i - 3][j + 3] = "W";
+                    updatePrettyBoard();
                     return true;
                 }
             }
@@ -241,6 +243,7 @@ public class ConnectFourBoard {
                     this.board[i - 1][j - 1] = "W";
                     this.board[i - 2][j - 2] = "W";
                     this.board[i - 3][j - 3] = "W";
+                    updatePrettyBoard();
                     return true;
                 }
             }
