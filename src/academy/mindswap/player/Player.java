@@ -43,7 +43,6 @@ public class Player {
 
         @Override
         public void run() {
-
             while (!socket.isClosed()) {
                 try {
                     String line = in.readLine();
