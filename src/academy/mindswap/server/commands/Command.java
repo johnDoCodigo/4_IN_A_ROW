@@ -3,7 +3,6 @@ package academy.mindswap.server.commands;
 
 public enum Command {
     HELP("/help", new HelpHandler()),
-    //WHISPER("/whisper", new WhisperHandler()),
     QUIT("/quit", new QuitHandler()),
     PLAYAGAIN("/playagain", new PlayAgainHandler());
 
