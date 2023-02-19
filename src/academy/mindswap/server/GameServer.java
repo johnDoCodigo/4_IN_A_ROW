@@ -45,7 +45,6 @@ public class GameServer {
             ++numberOfConnections;
             maxNumberOfPlayers++;
         }
-
     }
 
     public void acceptConnection(int numberOfConnections) throws IOException {

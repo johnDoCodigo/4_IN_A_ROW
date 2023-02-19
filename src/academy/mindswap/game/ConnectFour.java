@@ -6,9 +6,7 @@ import academy.mindswap.server.sounds.SoundFiles;
 public class ConnectFour {
 /*
     public static void main(String[] args) {
-
             ConnectFour game1 = new ConnectFour();
-
 
             //FILL BOARD WITH O's
             for (int i = 0; i < 7; i++) {
@@ -67,8 +65,6 @@ public class ConnectFour {
             System.out.println("Game winner? " + game1.checkWinner("@"));
             System.out.println(game1.updatePrettyBoard());
 
-
-
             //CHECK FOR SLASH WIN /
             System.out.println("-".repeat(20) + "CHECK FOR SLASH WIN /"+"-".repeat(20));
             for (int i = 0; i < 7; i++) {  //CLEAN BOARD WITH O's
@@ -110,7 +106,6 @@ public class ConnectFour {
 
             System.out.println("Game winner? " + game1.checkWinner("@"));
             System.out.println(game1.updatePrettyBoard());
-
         }
  */
 
