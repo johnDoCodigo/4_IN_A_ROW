@@ -6,7 +6,7 @@ import academy.mindswap.server.messages.Messages;
 public class QuitHandler implements CommandHandler {
 
     @Override
-    public void execute(GameServer gameServer, GameServer.playerConnectionHandler playerConnectionHandler) {
+    public void execute(GameServer gameServer, GameServer.PlayerConnectionHandler playerConnectionHandler) {
         gameServer.removePlayer(playerConnectionHandler);
         gameServer.broadcast(playerConnectionHandler.getName(), playerConnectionHandler.getName() + Messages.PLAYER_DISCONNECTED);
         playerConnectionHandler.close();
