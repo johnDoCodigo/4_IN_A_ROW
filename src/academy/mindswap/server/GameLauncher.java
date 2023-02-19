@@ -9,7 +9,7 @@ public class GameLauncher {
         GameServer gameServer = new GameServer();
 
         try {
-           gameServer.start(8082);
+           gameServer.start(8083);
         } catch (IOException e) {
             e.printStackTrace();
         }
