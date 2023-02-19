@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Class ConnectFourHandler implements the interface Runnable.
+ * This one handles all the game logics.
+ */
 public class ConnectFourHandler implements Runnable {
     private final GameServer.PlayerConnectionHandler player1;
     private final GameServer.PlayerConnectionHandler player2;
@@ -21,6 +25,11 @@ public class ConnectFourHandler implements Runnable {
 
     private List<GameServer.PlayerConnectionHandler> listOfBoardPlayers = new ArrayList<>();
 
+    /**
+     *Constructor Method
+     * @param player1 - this represents the player 1
+     * @param player2 - this represents the player 2
+     */
     public ConnectFourHandler(GameServer.PlayerConnectionHandler player1, GameServer.PlayerConnectionHandler player2) {
         this.player1 = player1;
         this.player2 = player2;
@@ -31,7 +40,10 @@ public class ConnectFourHandler implements Runnable {
         listOfBoardPlayers.add(player1);
         listOfBoardPlayers.add(player2);
     }
-
+/**
+ * Method responsible for starting the game and creates a new ConnectFour whenever a new game is started.
+ * This method ensures that the game remains active as long as there is a started Game.
+ */
     @Override
     public void run() {
         GameServer.PlayerConnectionHandler currentPlayer = player1;
@@ -112,6 +124,12 @@ public class ConnectFourHandler implements Runnable {
          */
     }
 
+    /**
+     * This private boolean method is responsible for checking the winner.
+     * @param currentPlayer - player whose is playing.
+     * @param sound - sound referent to the current player playing. Each player have a different sound when play's.
+     * @return - if it's true, current player wins. if false, the players keep playing.
+     */
     private boolean checkWinnerAndBroadcast(GameServer.PlayerConnectionHandler currentPlayer, Sound sound) {
         if (board.checkWinner(getMove())) {
             sound.getSoundClip(SoundFiles.GAME_OVER.getPath());
@@ -126,6 +144,11 @@ public class ConnectFourHandler implements Runnable {
         }
         return false;
     }
+
+    /**
+     * This private boolean method is responsible for checking if the game has draw.
+     * @return if its true the game ended in a draw. if false the players keep playing.
+     */
 
     private boolean checkDrawAndBroadcast() {
         if (board.checkDraw()) {
@@ -149,6 +172,13 @@ public class ConnectFourHandler implements Runnable {
         }
         return false;
     }
+
+    /**
+     * Private method get and validate if the input from the player is correct (must be between 0-6)
+     * @param currentPlayer - player who is playing.
+     * @param playerMove - players move choice.
+     * @return - this return give us the player input choice.
+     */
 
     private Integer getAnswerAndValidation(GameServer.PlayerConnectionHandler currentPlayer, Integer playerMove) {
         while (playerMove == null || board.checkFullColumn(playerMove)) {
@@ -174,6 +204,10 @@ public class ConnectFourHandler implements Runnable {
         return playerMove;
     }
 
+    /**
+     * private void method responsible for broadcast some messages before the game start.
+     * @throws InterruptedException if the thread is interrupted.
+     */
     private void animatedStart() throws InterruptedException {
         Thread.sleep(1500);
         broadcast("GAME STARTS IN: " + 3);
@@ -195,28 +229,52 @@ public class ConnectFourHandler implements Runnable {
         isGameEnded = false;
     }
 
+    /**
+     * This  public void method is responsible for starting the game and Broadcast the board.
+     */
+
     public void startGame() {
         isGameStarted = true;
         broadcast(board.getPrettyBoard());
     }
 
+
+    /**
+     * This public synchronized void method sends the players inputs.
+     */
     public synchronized void broadcast(String message) {
         listOfBoardPlayers.stream()
                 .forEach(player -> player.send(message));
     }
 
+    /**
+     * This private synchronized boolean method checks if there's enough player for starting the game.
+     */
     private synchronized boolean checkIfGameCanStart() {
         return checkIfGameCanStart;
     }
+
+    /**
+     * This public synchronized boolean verify if the game can start.
+     * @return true the game will start.
+     */
 
     public synchronized boolean theGameCanStart() {
         this.checkIfGameCanStart = true;
         return true;
     }
 
+    /**
+     * This public String is responsible for
+     * @return
+     */
     public String getMove() {
         return move;
     }
+
+    /**
+     * This public void is responsible for switch players turn.
+     */
 
     public void switchMove() {
         move = (move == "R") ? "Y" : "R";
