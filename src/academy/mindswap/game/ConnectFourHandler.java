@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectFourHandler implements Runnable {
-
     private final GameServer.PlayerConnectionHandler player1;
     private final GameServer.PlayerConnectionHandler player2;
     private final ConnectFourBoard board;
@@ -48,7 +47,7 @@ public class ConnectFourHandler implements Runnable {
             Thread.sleep(1500);
             broadcast("GAME STARTS IN: " + 1);
             Thread.sleep(1500);
-            broadcast("-".repeat(20) + "THE GAME IS ABOUT TO START " + "-".repeat(20));
+            broadcast(Messages.START_GAME);
             Thread.sleep(3000);
 
 
@@ -84,7 +83,7 @@ public class ConnectFourHandler implements Runnable {
                         playerMove = Integer.parseInt(input);
 
                         if (board.checkFullColumn(playerMove)) {
-                            currentPlayer.send("Column is full. Choose another column");
+                            currentPlayer.send(Messages.COLUMN_FULL);
                         }
 
                     } else {
@@ -149,9 +148,17 @@ public class ConnectFourHandler implements Runnable {
          */
     }
 
+    //TODO FEATURE: Play again
+    public void playAgain() {
+        board.fillEmptyBoard();
+        board.updatePrettyBoard();
+        board.resetNumberOfPlays();
+        isGameStarted = true;
+        isGameEnded = false;
+    }
+
     public void startGame() {
         isGameStarted = true;
-        broadcast(Messages.START_GAME);
         broadcast(board.getPrettyBoard());
     }
 
@@ -159,7 +166,6 @@ public class ConnectFourHandler implements Runnable {
         listOfBoardPlayers.stream()
                 .forEach(player -> player.send(message));
     }
-
 
     private synchronized boolean checkIfGameCanStart() {
         return checkIfGameCanStart;
@@ -176,13 +182,5 @@ public class ConnectFourHandler implements Runnable {
 
     public void switchMove() {
         move = (move == "R") ? "Y" : "R";
-    }
-
-    public void playAgain() {
-        board.fillEmptyBoard();
-        board.updatePrettyBoard();
-        board.resetNumberOfPlays();
-        isGameStarted = true;
-        isGameEnded = false;
     }
 }

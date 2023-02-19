@@ -8,10 +8,8 @@ public class PlayAgainHandler implements CommandHandler {
     public void execute(GameServer server, GameServer.PlayerConnectionHandler playerConnectionHandler) {
         //TODO FEATURE
         /*
-        String message = playerConnectionHandler.getPlayerInput();
         server.broadcast(playerConnectionHandler.getName(), playerConnectionHandler.getName() + Messages.PLAY_AGAIN);
         server.getConnectFour().playAgain();
          */
-
     }
 }
