@@ -50,14 +50,13 @@ public class ConnectFourHandler implements Runnable {
         GameServer.PlayerConnectionHandler notPlayingPlayer = player2;
         ReentrantLock lockNotYourTurnInput = new ReentrantLock();
 
-        //
+
         try {
             animatedStart();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
-        //GAME  LOGIC
         while (!isGameEnded) {
             if (checkIfGameCanStart() && !isGameStarted) {
                 startGame();
@@ -153,21 +152,6 @@ public class ConnectFourHandler implements Runnable {
         }
         return false;
     }
-
-    private boolean broadCastIfWinner(GameServer.PlayerConnectionHandler currentPlayer) {
-        if (board.checkWinner(getMove())) {
-            broadcast(currentPlayer.getName() + " HAS WON THE GAME!");
-            broadcast(board.getPrettyBoard());
-            if (currentPlayer == player1) {
-                broadcast(Messages.PLAYER1_WIN);
-            } else {
-                broadcast(Messages.PLAYER2_WIN);
-            }
-            return true;
-        }
-        return false;
-    }
-
     /**
      * Private method get and validate if the input from the player is correct (must be between 0-6)
      * @param currentPlayer - player who is playing.
