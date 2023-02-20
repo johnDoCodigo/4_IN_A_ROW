@@ -41,7 +41,4 @@ public class Sound {
         soundClip.start();     // Start playing
     }
 
-    public Clip getSoundLoopVar() {
-        return soundLoop;
-    }
 }
