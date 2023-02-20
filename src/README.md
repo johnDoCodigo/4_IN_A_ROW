@@ -24,3 +24,4 @@ Filipe Brandão - [@filbrandao](https://github.com/filbrandao)
 João Pedro Rodrigues - [@johnDoCodigo](https://github.com/johnDoCodigo) 
 Rui Rajão - [@ruirajao](https://github.com/ruirajao) 
 Susana Gandra - [@susanagandra](https://github.com/susanagandra) 
+

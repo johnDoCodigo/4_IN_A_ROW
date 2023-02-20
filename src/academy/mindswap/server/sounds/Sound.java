@@ -1,11 +1,30 @@
+/*
+ * @(#)Command.java        1.0 20/02/2023
+ *
+ * Copyright (c) MindSwap Academy - João Rodrigues, Filipe Brandão, Rui Rajão e Susana Gandra.
+ * All rights reserved.
+ *
+ * This software was produced for our first group project.
+ */
 package academy.mindswap.server.sounds;
-
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Class responsible to sent a sound effect for connect four game
+ */
+
+
 public class Sound {
     Clip soundLoop;
+
+    /**
+     * Gets a sound clip from a file and plays it once.
+     *
+     * @param soundPath The path to the sound file.
+     * @throws RuntimeException if the sound file is not supported or if there is an error playing the sound.
+     */
     public void getSoundClip(String soundPath) {
         final Clip soundClip;
         try {
