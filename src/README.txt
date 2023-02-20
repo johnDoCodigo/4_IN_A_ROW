@@ -1,7 +1,7 @@
 Connect 4
 
 Rules:
-Connect four is a very simple gameServer. It is always played between 2 players and on a 7x6 space board. 
+Connect four is a very simple game. It is always played between 2 players and on a 7x6 space board. 
 Each turn, each player chooses a column to place his piece, it drops down to the first available square. 
 The one who manages to place 4 consecutive pieces in a row horizontally, vertical or diagonal wins. 
 If no one succeeds, the match ends in a draw.
