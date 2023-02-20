@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"academy.mindswap.game"},{"l":"academy.mindswap.player"},{"l":"academy.mindswap.server"},{"l":"academy.mindswap.server.commands"},{"l":"academy.mindswap.server.messages"},{"l":"academy.mindswap.server.sounds"},{"l":"All Packages","u":"allpackages-index.html"}];updateSearchResults();
