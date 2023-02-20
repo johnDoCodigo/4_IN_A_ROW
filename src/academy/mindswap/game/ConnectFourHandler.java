@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Class ConnectFourHandler implements the interface Runnable.
+ * This one handles all the game logics.
+ */
 public class ConnectFourHandler implements Runnable {
     private final GameServer.PlayerConnectionHandler player1;
     private final GameServer.PlayerConnectionHandler player2;
@@ -21,6 +25,11 @@ public class ConnectFourHandler implements Runnable {
 
     private List<GameServer.PlayerConnectionHandler> listOfBoardPlayers = new ArrayList<>();
 
+    /**
+     *Constructor Method
+     * @param player1 - this represents the player 1
+     * @param player2 - this represents the player 2
+     */
     public ConnectFourHandler(GameServer.PlayerConnectionHandler player1, GameServer.PlayerConnectionHandler player2) {
         this.player1 = player1;
         this.player2 = player2;
@@ -31,38 +40,39 @@ public class ConnectFourHandler implements Runnable {
         listOfBoardPlayers.add(player1);
         listOfBoardPlayers.add(player2);
     }
-
+/**
+ * This method is responsible for starting the game and creating a new game when ever it starts, and ensures that the game remains active as long as there's a started Game.
+ * Waits a bit so that players can read the instructions. Broadcasts current player turn. Get player turn input and checks from valid input. Place current player move. Checks for winner. Checks for draw. Broadcasts the board with the new move. Switch move and player.
+ */
     @Override
     public void run() {
         GameServer.PlayerConnectionHandler currentPlayer = player1;
         GameServer.PlayerConnectionHandler notPlayingPlayer = player2;
         ReentrantLock lockNotYourTurnInput = new ReentrantLock();
 
-        //Waits a bit so that players can read the instructions.
+
         try {
             animatedStart();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
-        //GAME  LOGIC
         while (!isGameEnded) {
             if (checkIfGameCanStart() && !isGameStarted) {
                 startGame();
             }
 
             if (isGameStarted && !isGameEnded) {
-                //Broadcasts current player turn
+
                 lockNotYourTurnInput.lock();
-                currentPlayer.send(currentPlayer.getName() + Messages.YOUR_TURN);
-                notPlayingPlayer.send(notPlayingPlayer.getName() + Messages.MUST_WAIT);
+                currentPlayer.send(currentPlayer.getName() + ", it's your turn!");
+                notPlayingPlayer.send(notPlayingPlayer.getName() + ", you must wait for your turn.");
                 lockNotYourTurnInput.unlock();
 
-                //Get player turn input and checks from valid input
+
                 Integer playerMove = null;
                 playerMove = getAnswerAndValidation(currentPlayer, playerMove);
 
-                //Place current player move
                 Sound sound = new Sound();
                 board.placePiece(getMove(), playerMove);
                 if (currentPlayer == player1) {
@@ -71,16 +81,12 @@ public class ConnectFourHandler implements Runnable {
                     sound.getSoundClip(SoundFiles.PLAYER2_PIECE.getPath());
                 }
 
-                //Checks for winner
                 if (checkWinnerAndBroadcast(currentPlayer, sound)) break;
 
-                //Checks for draw
                 if (checkDrawAndBroadcast()) break;
 
-                //Broadcasts the board with the new move
                 broadcast(board.getPrettyBoard());
 
-                //Switch move and player.
                 switchMove();
                 currentPlayer = (currentPlayer == player1) ? player2 : player1;
                 notPlayingPlayer = (notPlayingPlayer == player2) ? player1 : player2;
@@ -112,10 +118,16 @@ public class ConnectFourHandler implements Runnable {
          */
     }
 
+    /**
+     * This private boolean method is responsible for checking the winner.
+     * @param currentPlayer - player whose is playing.
+     * @param sound - sound referent to the current player playing. Each player have a different sound when play's.
+     * @return - if it's true, current player wins. if false, the players keep playing.
+     */
     private boolean checkWinnerAndBroadcast(GameServer.PlayerConnectionHandler currentPlayer, Sound sound) {
         if (board.checkWinner(getMove())) {
             sound.getSoundClip(SoundFiles.GAME_OVER.getPath());
-            broadcast(currentPlayer.getName() + Messages.WINNER);
+            broadcast(currentPlayer.getName() + " IS THE WINNER!!");
             broadcast(board.getPrettyBoard());
             if (currentPlayer == player1) {
                 broadcast(Messages.PLAYER1_WIN);
@@ -126,6 +138,11 @@ public class ConnectFourHandler implements Runnable {
         }
         return false;
     }
+
+    /**
+     * This private boolean method is responsible for checking if the game has draw.
+     * @return if its true the game ended in a draw. if false the players keep playing.
+     */
 
     private boolean checkDrawAndBroadcast() {
         if (board.checkDraw()) {
@@ -135,24 +152,16 @@ public class ConnectFourHandler implements Runnable {
         }
         return false;
     }
-
-    private boolean broadCastIfWinner(GameServer.PlayerConnectionHandler currentPlayer) {
-        if (board.checkWinner(getMove())) {
-            broadcast(currentPlayer.getName() + Messages.HAS_WON);
-            broadcast(board.getPrettyBoard());
-            if (currentPlayer == player1) {
-                broadcast(Messages.PLAYER1_WIN);
-            } else {
-                broadcast(Messages.PLAYER2_WIN);
-            }
-            return true;
-        }
-        return false;
-    }
+    /**
+     * Private method get and validate if the input from the player is correct (must be between 0-6)
+     * @param currentPlayer - player who is playing.
+     * @param playerMove - players move choice.
+     * @return - this return give us the player input choice.
+     */
 
     private Integer getAnswerAndValidation(GameServer.PlayerConnectionHandler currentPlayer, Integer playerMove) {
         while (playerMove == null || board.checkFullColumn(playerMove)) {
-            currentPlayer.send(Messages.NUMBER_1TO6);
+            currentPlayer.send("Enter a number between 0 and 6:");
             String input = null;
             try {
                 input = currentPlayer.in.readLine();
@@ -168,18 +177,24 @@ public class ConnectFourHandler implements Runnable {
                 }
 
             } else {
-                currentPlayer.send(Messages.INVALID_INPUT);
+                currentPlayer.send("Invalid input.");
             }
         }
         return playerMove;
     }
 
+    /**
+     * private void method responsible for broadcast some messages before the game start.
+     * @throws InterruptedException if the thread is interrupted.
+     */
     private void animatedStart() throws InterruptedException {
         Thread.sleep(1500);
-        for (int i = 3; i > 0; i--) {
-            broadcast(Messages.GAME_STARTS_IN + i);
-            Thread.sleep(1500);
-        }
+        broadcast("GAME STARTS IN: " + 3);
+        Thread.sleep(1500);
+        broadcast("GAME STARTS IN: " + 2);
+        Thread.sleep(1500);
+        broadcast("GAME STARTS IN: " + 1);
+        Thread.sleep(1500);
         broadcast(Messages.START_GAME);
         Thread.sleep(3000);
     }
@@ -193,28 +208,51 @@ public class ConnectFourHandler implements Runnable {
         isGameEnded = false;
     }
 
+    /**
+     * This  public void method is responsible for starting the game and Broadcast the board.
+     */
+
     public void startGame() {
         isGameStarted = true;
         broadcast(board.getPrettyBoard());
     }
 
+    /**
+     * This public synchronized void method sends the players inputs.
+     */
     public synchronized void broadcast(String message) {
         listOfBoardPlayers.stream()
                 .forEach(player -> player.send(message));
     }
 
+    /**
+     * This private synchronized boolean method checks if there's enough player for starting the game.
+     */
     private synchronized boolean checkIfGameCanStart() {
         return checkIfGameCanStart;
     }
+
+    /**
+     * This public synchronized boolean verify if the game can start.
+     * @return true the game will start.
+     */
 
     public synchronized boolean theGameCanStart() {
         this.checkIfGameCanStart = true;
         return true;
     }
 
+    /**
+     * This public String is responsible for
+     * @return
+     */
     public String getMove() {
         return move;
     }
+
+    /**
+     * This public void is responsible for switch players turn.
+     */
 
     public void switchMove() {
         move = (move == "R") ? "Y" : "R";

@@ -1,9 +1,10 @@
 package academy.mindswap.player;
 
-import academy.mindswap.server.messages.Messages;
-
 import java.io.*;
 import java.net.Socket;
+
+
+//dev_branchJ
 
 public class Player {
 
@@ -18,7 +19,7 @@ public class Player {
         try {
             player.start("localhost", 8083);
         } catch (IOException e) {
-            System.out.println(Messages.SERVER_ERROR);
+            System.out.println("Connection closed...");
         }
     }
 
@@ -80,7 +81,7 @@ public class Player {
                         System.exit(0);
                     }
                 } catch (IOException e) {
-                    System.out.println(Messages.SERVER_ERROR);
+                    System.out.println("Something went wrong with the server. Connection closing...");
                     try {
                         socket.close();
                     } catch (IOException ex) {
