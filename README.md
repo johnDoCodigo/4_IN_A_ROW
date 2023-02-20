@@ -1,6 +1,6 @@
 # **Connect 4**
 
-![](/home/filipe/Pictures/Screenshots/Screenshot from 2023-02-19 23-05-22.png) 
+![](https://i.ibb.co/KbFvPvy/Screenshot-from-2023-02-19-23-05-22.png) 
 
 **Rules:**
 Connect four is a very simple gameServer. It is always played between 2 players and on a 7x6 space board.
@@ -20,7 +20,7 @@ We were told to choose one text-based game, that should be usable by multiple us
 To be able to play, the user should run the "GameLauncher" as a server, and connect 2 users using "Player".
 
 **Authors:**
-Filipe Brandão - [@filbrandao](https://github.com/filbrandao) 
-João Pedro Rodrigues - [@johnDoCodigo](https://github.com/johnDoCodigo) 
-Rui Rajão - [@ruirajao](https://github.com/ruirajao) 
-Susana Gandra - [@susanagandra](https://github.com/susanagandra) 
+- Filipe Brandão - [@filbrandao](https://github.com/filbrandao) 
+- João Pedro Rodrigues - [@johnDoCodigo](https://github.com/johnDoCodigo) 
+- Rui Rajão - [@ruirajao](https://github.com/ruirajao) 
+- Susana Gandra - [@susanagandra](https://github.com/susanagandra) 
